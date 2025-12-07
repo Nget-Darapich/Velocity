@@ -5,11 +5,11 @@ import { Search, ShoppingCart, User } from 'lucide-vue-next';
     <div class="h-[120px] mx-[60px] flex flex-col-3 items-center justify-between gap-[295px]">
         <img src="@/assets/images/velocity_logo.png" alt="" />
         <div class="grid grid-cols-5 gap-[39px]">
-            <router-link to="/" class="text-[24px]">Home</router-link>
-            <router-link to="/products" class="text-[24px]">Product</router-link>
-            <router-link to="/#" class="text-[24px]">Category</router-link>
-            <router-link to="/#" class="text-[24px]">Brand</router-link>
-            <router-link to="/#" class="text-[24px]">About us</router-link>
+            <router-link to="/" class="text-[24px] w-fit">Home</router-link>
+            <router-link to="/products" class="text-[24px] w-fit">Product</router-link>
+            <router-link to="/#" class="text-[24px] w-fit">Category</router-link>
+            <router-link to="/#" class="text-[24px] w-fit">Brand</router-link>
+            <router-link to="/#" class="text-[24px] w-fit">About us</router-link>
         </div>
         <div class="grid grid-cols-3 gap-[38.5px]">
             <router-view to="/#">

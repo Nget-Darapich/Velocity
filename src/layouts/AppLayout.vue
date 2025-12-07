@@ -1,10 +1,10 @@
-<template>
+<template >
   <header>
     <AdsTop :messages="promoMessages" />
     <SignupLogin />
     <NavBar />
   </header>
-  <main>
+  <main class="grow">
     <router-view></router-view>
   </main>
   <footer>
