@@ -72,9 +72,10 @@
       <ProductCard
         v-for="item in currentProducts"
         :key="item.id"
-        :productImg="item.img"
-        :productName="item.name"
-        :productPrice="item.price"
+        :product-id="String(item.id)"
+        :product-img="item.img"
+        :product-name="item.name"
+        :product-price="item.price"
       />
     </div>
   </div>

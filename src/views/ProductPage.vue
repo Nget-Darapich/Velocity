@@ -33,9 +33,11 @@
       <ProductCard
         v-for="item in currentProducts"
         :key="item.id"
-        :productImg="item.img"
-        :productName="item.name"
-        :productPrice="item.price"
+        :product-id="String(item.id)"
+        :product-img="item.img"
+        :product-name="item.name"
+        :product-price="item.price"
+        @quick-view="openQuickView"
       />
     </div>
   </div>
@@ -61,17 +63,27 @@
       <ProductCard
         v-for="item in currentProductsInBrand"
         :key="item.id"
-        :productImg="item.img"
-        :productName="item.name"
-        :productPrice="item.price"
+        :product-id="item.id"
+        :product-img="item.img"
+        :product-name="item.name"
+        :product-price="item.price"
+        @quick-view="openQuickView"
       />
     </div>
   </div>
+  <!-- ✅ ADD MODAL HERE -->
+  <QuickViewModal
+    v-if="selectedProduct"
+    :is-open="!!selectedProduct"
+    :product="selectedProduct"
+    @close="closeQuickView"
+  />
 </template>
 <script setup lang="ts">
 import BreadCrumb from '@/components/BreadCrumb.vue'
 import FilterProduct from '@/components/FilterProduct.vue'
 import ProductCard from '@/components/ProductCard.vue'
+import QuickViewModal from '@/components/QuickViewModal.vue'
 import { computed, ref } from 'vue'
 
 type TabKey = 'featured' | 'newArrivals' | 'bestSeller'
@@ -98,45 +110,106 @@ const currentProductsInBrand = computed(() => {
   return ProductsInBrand[activeTabForBrand.value] || []
 })
 
-
 const products = {
   featured: [
-    { id: 1, name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: 2, name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: 3, name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: 4, name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
+    { id: '1', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '2', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
+    { id: '3', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
+    { id: '4', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
   ],
   newArrivals: [
-    { id: 5, name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: 6, name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: 7, name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
-    { id: 8, name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
+    { id: '5', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
+    { id: '6', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '7', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
+    { id: '8', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
   ],
   bestSeller: [
-    { id: 9, name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: 10, name: 'Waterproof White Sneaker', price: '$25.00', img: 'waterproof.png' },
-    { id: 11, name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: 12, name: 'Light Weight Running Shoes', price: '$25.00', img: 'running.png' },
+    { id: '9', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
+    { id: '10', name: 'Waterproof White Sneaker', price: '$25.00', img: 'waterproof.png' },
+    { id: '11', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '12', name: 'Light Weight Running Shoes', price: '$25.00', img: 'running.png' },
   ],
 }
-const ProductsInBrand = {        
+const ProductsInBrand = {
   nike: [
-    { id: 1, name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: 2, name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: 3, name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: 4, name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
+    { id: '1', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '2', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
+    { id: '3', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
+    { id: '4', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
   ],
   vans: [
-    { id: 5, name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: 6, name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: 7, name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
-    { id: 8, name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
+    { id: '5', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
+    { id: '6', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '7', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
+    { id: '8', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
   ],
   adidas: [
-    { id: 9, name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: 10, name: 'Waterproof White Sneaker', price: '$25.00', img: 'waterproof.png' },
-    { id: 11, name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: 12, name: 'Light Weight Running Shoes', price: '$25.00', img: 'running.png' },
+    { id: '9', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
+    { id: '10', name: 'Waterproof White Sneaker', price: '$25.00', img: 'waterproof.png' },
+    { id: '11', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '12', name: 'Light Weight Running Shoes', price: '$25.00', img: 'running.png' },
   ],
+}
+// Add modal state
+const selectedProduct = ref<{
+  id: string
+  name: string
+  price: string
+  img: string
+  description: string
+  sizes: string[]
+  brand: string
+  category: string
+  madeIn: string
+} | null>(null)
+// const openQuickView = (productId: number) => {
+//   // Search in both product sets
+//   const id = Number(productId)
+//   let product =
+//     products.featured.find((p) => p.id === productId) ||
+//     products.newArrivals.find((p) => p.id === productId) ||
+//     products.bestSeller.find((p) => p.id === productId) ||
+//     ProductsInBrand.nike.find((p) => p.id === productId) ||
+//     ProductsInBrand.vans.find((p) => p.id === productId) ||
+//     ProductsInBrand.adidas.find((p) => p.id === productId)
+
+//   if (product) {
+//     // Enrich with extra modal-only data
+//     selectedProduct.value = {
+//       ...product,
+//       description: 'Classic sneakers, clean, comfortable, perfect for any outfit.',
+//       sizes: ['S', 'M', 'L', 'XL'],
+//       brand: 'Nike', // or infer from context
+//       category: 'Athletic Footwear',
+//       madeIn: 'United States',
+//     }
+//   }
+// }
+const openQuickView = (productId: string) => {
+  // Combine all products
+  const allProducts = [
+    ...products.featured,
+    ...products.newArrivals,
+    ...products.bestSeller,
+    ...ProductsInBrand.nike,
+    ...ProductsInBrand.vans,
+    ...ProductsInBrand.adidas,
+  ]
+
+  const product = allProducts.find((p) => p.id === productId)
+
+  if (product) {
+    selectedProduct.value = {
+      ...product,
+      description: 'Classic sneakers, clean, comfortable, perfect for any outfit.',
+      sizes: ['S', 'M', 'L', 'XL'],
+      brand: 'Nike',
+      category: 'Athletic Footwear',
+      madeIn: 'United States',
+    }
+  }
+}
+const closeQuickView = () => {
+  selectedProduct.value = null
 }
 </script>
