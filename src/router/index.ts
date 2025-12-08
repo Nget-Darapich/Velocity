@@ -1,38 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '@/views/HomePage.vue'
-import ProductPage from '@/views/ProductPage.vue'
-import AppLayout from '@/layouts/AppLayout.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'Landing',
-      component: AppLayout,
+      component: () => import('@/layouts/AppLayout.vue'),
       children: [
-        {
-          path: '/',
-          name: 'Home',    
-          component: HomePage
-        },
-        {
-          path: 'products',
-          name: 'Products',
-          component: ProductPage
-        },
-        // {
-        //   path: 'categories',
-        //   component: CategoryPage
-        // },
-        // {
-        //   path: 'brands',
-        //   component: BrandPage
-        // },
-        // {
-        //   path: 'aboutus',
-        //   component: AboutusPage
-        // }
-      ]
+        { path: '', name: 'Home', component: () => import('@/views/HomePage.vue') },
+        { path: 'products', name: 'Products', component: () => import('@/views/ProductPage.vue') },
+      ],
+    },
+
+    {
+      path: '/auth',
+      component: () => import('@/layouts/LoginSignupLayout.vue'),
+      children: [
+        { path: 'login', name: 'Login', component: () => import('@/views/LoginPage.vue') },
+        { path: 'signup', name: 'Signup', component: () => import('@/views/SignupPage.vue') },
+      ],
     },
   ],
 })
