@@ -7,15 +7,17 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Home',
+      name: 'Landing',
       component: AppLayout,
       children: [
         {
           path: '/',
+          name: 'Home',    
           component: HomePage
         },
         {
           path: 'products',
+          name: 'Products',
           component: ProductPage
         },
         // {
