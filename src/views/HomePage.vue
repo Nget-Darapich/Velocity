@@ -9,11 +9,14 @@
       <p class="pt-5 text-[24px] font-medium w-[485px] ml-1">
         From classic sneakers to trendy boots, our collection has something for everyone.
       </p>
-      <button
-        class="bg-[#992020] text-white text-[24px] flex gap-2 items-center justify-center w-[180px] h-[70px] mt-10"
-      >
-        <span>Shop Now</span> <MoveRight />
-      </button>
+      <router-link to="/auth/signup" custom v-slot="{ navigate }">
+        <button
+          @click="navigate"
+          class="bg-[#992020] text-white text-[24px] flex gap-2 items-center justify-center w-[180px] h-[70px] mt-10"
+        >
+          <span>Shop Now</span> <MoveRight />
+        </button>
+      </router-link>
     </div>
   </div>
   <div class="h-[500px]">
@@ -85,11 +88,14 @@
       <p class="pt-5 text-[16px] font-medium w-[485px] ml-1">
         Our collection features comfortable and stylish aim to keep your feet happy all day long.
       </p>
-      <button
-        class="bg-[#992020] text-white text-[24px] flex gap-2 items-center justify-center w-[180px] h-[70px] mt-10"
-      >
-        <span>Shop Now</span> <MoveRight />
-      </button>
+      <router-link to="/auth/signup" custom v-slot="{ navigate }">
+        <button
+          @click="navigate"
+          class="bg-[#992020] text-white text-[24px] flex gap-2 items-center justify-center w-[180px] h-[70px] mt-10"
+        >
+          <span>Shop Now</span> <MoveRight />
+        </button>
+      </router-link>
     </div>
   </div>
 </template>

@@ -7,8 +7,8 @@
       <span class="text-[14px] w-fit">1d delivery available!</span>
       <div class="grid grid-cols-2 gap-10 w-fit">
         <div class="grid grid-cols-2 gap-1">
-          <router-link to="/#">Signup /</router-link>
-          <router-link to="/#">Login</router-link>
+          <router-link to="/auth/signup">Signup /</router-link>
+          <router-link to="/auth/login">Login</router-link>
         </div>
         <div class="grid grid-cols-3 gap-5 items-center justify-center">
           <Facebook :size="18" class="ml-1.5" />
@@ -17,6 +17,7 @@
         </div>
       </div>
     </div>
+
     <NavBar />
   </header>
   <main class="grow">
@@ -68,6 +69,7 @@
 <script setup lang="ts">
 import AdsTop from '@/components/AdsTop.vue'
 import NavBar from '@/components/NavBar.vue'
+
 import { Facebook, Instagram, Twitter } from 'lucide-vue-next'
 const promoMessages = [
   { text: 'Hurry Up! Get your first deal with 15% off for newcomers!' },
