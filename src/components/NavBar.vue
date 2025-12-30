@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ChevronDown, Search, ShoppingCart, User } from 'lucide-vue-next'
+import { ChevronDown, Search, ShoppingCart, User, Heart } from 'lucide-vue-next'
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useCartStore } from '@/stores/cart'
+import { useProductStore } from '@/stores/store'
 import SearchComponent from '@/components/SearchComponent.vue'
 
 /** dropdown states */
@@ -13,6 +14,9 @@ const isSearchOpen = ref(false)
 
 /** cart store */
 const cart = useCartStore()
+
+// Get wishlist count from store
+const { wishlistCount } = useProductStore()
 
 function toggleCategoryDropdown(show: boolean) {
   showCategoryDropdown.value = show
@@ -121,12 +125,21 @@ onUnmounted(() => window.removeEventListener('keydown', closeOnEscape))
         aria-label="Open search"
         class="cursor-pointer"
       />
-
+      <!-- Wishlist with Badge -->
+      <router-link to="/wishlist" class="relative">
+        <Heart :size="24" />
+        <span 
+          v-if="wishlistCount > 0"
+          class="absolute -top-2 -right-2 text-xs px-1.5 py-0.5 rounded-full border bg-[#992020] text-white"
+        >
+          {{ wishlistCount > 99 ? '99+' : wishlistCount }}
+        </span>
+      </router-link>
       <router-link to="/cart" class="relative w-fit" aria-label="Cart">
         <ShoppingCart :size="24" />
         <span
           v-if="cart.totalItems > 0"
-          class="absolute -top-2 -right-2 text-xs px-1.5 py-0.5 rounded-full border bg-white"
+          class="absolute -top-2 -right-2 text-xs px-1.5 py-0.5 rounded-full border bg-[#992020] text-white"
         >
           {{ cart.totalItems }}
         </span>
