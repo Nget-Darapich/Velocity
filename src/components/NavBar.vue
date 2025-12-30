@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import { ChevronDown, Search, ShoppingCart, User } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { ChevronDown, Search, ShoppingCart, User } from 'lucide-vue-next'
+import { ref } from 'vue'
+import { useCartStore } from '@/stores/cart'
 
-// State for dropdown visibility
-const showCategoryDropdown = ref(false);
-const showBrandDropdown = ref(false);
+// dropdown states
+const showCategoryDropdown = ref(false)
+const showBrandDropdown = ref(false)
 
-// Functions to toggle dropdowns
+// cart store
+const cart = useCartStore()
+
 function toggleCategoryDropdown(show: boolean) {
-  showCategoryDropdown.value = show;
+  showCategoryDropdown.value = show
 }
 
 function toggleBrandDropdown(show: boolean) {
-  showBrandDropdown.value = show;
+  showBrandDropdown.value = show
 }
-
 </script>
+
 <template>
     <div class="h-[120px] mx-[60px] flex flex-col-3 items-center justify-between gap-[295px]">
         <img src="@/assets/images/velocity_logo.png" alt="" />
@@ -59,7 +62,7 @@ function toggleBrandDropdown(show: boolean) {
         @mouseleave="toggleBrandDropdown(false)"
       >
         <router-link to="#" class="text-[24px] w-fit flex items-center">
-          Brand  <chevron-down :size="24"/> 
+          Brand  <chevron-down :size="24"/>
         </router-link>
 
         <!-- Placeholder for Brand Dropdown -->
@@ -78,15 +81,24 @@ function toggleBrandDropdown(show: boolean) {
             </router-link>
         </div>
       </div>
-            <router-link to="/#" class="text-[24px] w-fit">About us</router-link>           
+            <router-link to="/#" class="text-[24px] w-fit">About us</router-link>
         </div>
         <div class="grid grid-cols-3 gap-[38.5px]">
             <router-link to="/#">
                 <search :size="24" />
             </router-link>
-            <router-link to="/#">
-                <shopping-cart :size="24" />
+            <router-link to="/cart" class="relative w-fit">
+              <shopping-cart :size="24" />
+
+              <!-- cart count badge (placeholder) -->
+              <span
+                v-if="cart.totalItems > 0"
+                class="absolute -top-2 -right-2 text-xs px-1.5 py-0.5 rounded-full border"
+              >
+                {{ cart.totalItems }}
+              </span>
             </router-link>
+
             <router-link to="/#">
                 <user :size="24" />
             </router-link>
