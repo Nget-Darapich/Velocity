@@ -111,11 +111,12 @@
   <!-- ✅ QUICK VIEW MODAL -->
   <QuickViewModal
     v-if="selectedProduct"
-    :isOpen="isQuickViewOpen"
+    :is-open="isQuickViewOpen"
     :product="selectedProduct"
     @close="closeQuickView"
     @add-to-cart="handleAddToCartFromQuickView"
   />
+
 </template>
 
 <script setup lang="ts">

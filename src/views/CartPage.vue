@@ -5,6 +5,7 @@ import promoIcon from '@/assets/images/promo-icon.png'
 import { useRouter } from 'vue-router'
 
 const cart = useCartStore()
+const router = useRouter()
 
 const promo = ref('CODE123')
 
@@ -14,20 +15,28 @@ const shipping = computed(() => 4)
 const total = computed(() => cart.subtotal - discount.value + shipping.value)
 
 const clearCart = () => {
+  // ✅ requires cart.clearCart() action in store
   cart.clearCart()
 }
 
 const applyPromo = () => {
   console.log('Apply promo:', promo.value)
 }
+
 const getItemImage = (img: string) => {
+  // Vite-safe way (no import.meta inside template)
   return new URL(`../assets/images/${img}`, import.meta.url).href
 }
-const router = useRouter()
 
 const goToProducts = () => {
   router.push('/products')
 }
+
+const goToCheckout = () => {
+  router.push('/checkout')
+}
+
+// qty controls (id + size)
 const increaseQty = (id: number, size: string | undefined, currentQty: number) => {
   cart.updateQuantity(id, size, currentQty + 1)
 }
@@ -40,9 +49,8 @@ const decreaseQty = (id: number, size: string | undefined, currentQty: number) =
   cart.updateQuantity(id, size, currentQty - 1)
 }
 
-const wishlistIds = ref<number[]>(
-  JSON.parse(localStorage.getItem('wishlistIds') || '[]')
-)
+// wishlist (simple localStorage demo)
+const wishlistIds = ref<number[]>(JSON.parse(localStorage.getItem('wishlistIds') || '[]'))
 
 const addToWishlist = (id: number) => {
   if (!wishlistIds.value.includes(id)) {
@@ -53,12 +61,10 @@ const addToWishlist = (id: number) => {
     alert('Already in wishlist!')
   }
 }
-
 </script>
 
 <template>
   <div class="min-h-screen">
-
     <!-- TITLE + BREADCRUMB -->
     <div class="px-[60px] pt-8">
       <h1 class="text-[38px] font-semibold text-[#222]">Order Cart</h1>
@@ -73,10 +79,8 @@ const addToWishlist = (id: number) => {
     <!-- MAIN CONTENT -->
     <div class="px-[60px] pt-10 pb-16">
       <div class="grid grid-cols-12 gap-10">
-
         <!-- LEFT SIDE -->
         <div class="col-span-7 space-y-10">
-
           <!-- SHOPPING CART BAR -->
           <div class="rounded-[10px] bg-[#FF8000] px-6 py-4 flex items-center justify-between">
             <div>
@@ -95,18 +99,15 @@ const addToWishlist = (id: number) => {
           <div class="space-y-12">
             <div
               v-for="item in cart.items"
-              :key="item.id"
-              class="bg-white rounded-[10px] border border-[#E9E9E9]
-                     shadow-[0_6px_14px_rgba(0,0,0,0.15)]"
+              :key="`${item.id}-${item.size || ''}`"
+              class="bg-white rounded-[10px] border border-[#E9E9E9] shadow-[0_6px_14px_rgba(0,0,0,0.15)]"
             >
               <div class="p-6 flex gap-6 items-start">
-                <!-- IMAGE PLACEHOLDER -->
                 <img
                   :src="getItemImage(item.img)"
                   alt="Product"
                   class="w-[70px] h-[70px] rounded-md object-cover shrink-0"
                 />
-
 
                 <div class="flex-1">
                   <div class="flex items-start justify-between">
@@ -118,16 +119,13 @@ const addToWishlist = (id: number) => {
                       <div class="mt-2 flex gap-10 text-[10px] text-[#777]">
                         <span>Color: Sky</span>
                         <span>Size: {{ item.size || '-' }}</span>
-
                       </div>
                     </div>
 
                     <div class="text-right">
                       <p class="text-[10px] text-[#777]">Item Price</p>
                       <p class="text-[12px] mt-1">
-                        <span class="text-[#1AA35B] font-semibold">
-                          ${{ item.price }}
-                        </span>
+                        <span class="text-[#1AA35B] font-semibold">${{ item.price }}</span>
                         <span class="text-[#999]"> / $3.00 Tax</span>
                       </p>
                     </div>
@@ -145,7 +143,6 @@ const addToWishlist = (id: number) => {
                         <span class="w-2 h-2 bg-[#1AA35B] rounded-full"></span>
                         Add Wishlist
                       </button>
-
                     </div>
 
                     <div class="flex items-center gap-4">
@@ -153,20 +150,18 @@ const addToWishlist = (id: number) => {
                         <button
                           class="w-6 h-6 rounded-full border border-[#DADADA] text-[12px]"
                           @click="decreaseQty(item.id, item.size, item.quantity)"
+                        >
+                          -
+                        </button>
 
-
-                        >-</button>
-
-                        <span class="text-[12px] font-semibold">
-                          {{ item.quantity }}
-                        </span>
+                        <span class="text-[12px] font-semibold">{{ item.quantity }}</span>
 
                         <button
                           class="w-6 h-6 rounded-full border border-[#DADADA] text-[12px]"
                           @click="increaseQty(item.id, item.size, item.quantity)"
-
-
-                        >+</button>
+                        >
+                          +
+                        </button>
                       </div>
 
                       <div class="text-right min-w-[110px]">
@@ -189,32 +184,26 @@ const addToWishlist = (id: number) => {
 
         <!-- RIGHT SIDE -->
         <div class="col-span-5 space-y-14">
-
           <!-- PROMO CARD -->
           <div class="bg-[#FF8000] rounded-[10px] px-6 py-6 text-white shadow-sm">
             <div class="flex justify-center mb-3">
               <img :src="promoIcon" alt="Promo" class="w-14 h-14 object-contain" />
             </div>
 
-            <p class="text-[16px] font-semibold text-center">
-              Have a Promo Code ?
-            </p>
+            <p class="text-[16px] font-semibold text-center">Have a Promo Code ?</p>
 
             <div class="mt-5 flex items-center justify-center gap-4">
               <div class="h-9 w-[130px] bg-[#FFB000] rounded-full flex items-center justify-center px-3">
                 <input
                   v-model="promo"
                   type="text"
-                  class="w-full bg-transparent text-center text-[12px] font-semibold
-                        text-white outline-none placeholder:text-white/80"
+                  class="w-full bg-transparent text-center text-[12px] font-semibold text-white outline-none placeholder:text-white/80"
                   placeholder="CODE123"
                 />
               </div>
 
-
               <button
-                class="h-9 px-6 rounded-md bg-white text-[#222]
-                       text-[12px] font-medium"
+                class="h-9 px-6 rounded-md bg-white text-[#222] text-[12px] font-medium"
                 @click="applyPromo"
               >
                 Apply
@@ -223,12 +212,9 @@ const addToWishlist = (id: number) => {
           </div>
 
           <!-- ORDER SUMMARY -->
-          <div class="bg-white rounded-[10px] border border-[#E9E9E9]
-                      shadow-[0_6px_14px_rgba(0,0,0,0.15)]">
+          <div class="bg-white rounded-[10px] border border-[#E9E9E9] shadow-[0_6px_14px_rgba(0,0,0,0.15)]">
             <div class="px-6 py-5 border-b border-[#EAEAEA]">
-              <p class="font-semibold text-[14px] text-[#222]">
-                Order Summary
-              </p>
+              <p class="font-semibold text-[14px] text-[#222]">Order Summary</p>
               <div class="mt-3 h-[2px] bg-[#6C63FF]"></div>
             </div>
 
@@ -253,28 +239,21 @@ const addToWishlist = (id: number) => {
                 <span>${{ total }}</span>
               </div>
 
-              <!-- CHECKOUT BAR -->
+              <!-- ✅ CHECKOUT BAR (NOW NAVIGATES) -->
               <div class="mt-6 bg-[#4BE3C3] rounded-[10px] px-6 py-4 flex justify-between items-center">
                 <span class="font-semibold">${{ total }}</span>
-                <button class="flex items-center gap-2 font-semibold">
+
+                <button class="flex items-center gap-2 font-semibold" @click="goToCheckout">
                   Checkout
-                  <span class="w-7 h-7 rounded-full bg-[#FFB000]
-                               flex items-center justify-center">
-                    ›
-                  </span>
+                  <span class="w-7 h-7 rounded-full bg-[#FFB000] flex items-center justify-center">›</span>
                 </button>
               </div>
 
-              <button
-                class="mt-4 bg-[#FFB000] text-white px-5 py-2 rounded-[8px]"
-                @click="goToProducts"
-              >
+              <button class="mt-4 bg-[#FFB000] text-white px-5 py-2 rounded-[8px]" @click="goToProducts">
                 Continue Shopping
               </button>
-
             </div>
           </div>
-
         </div>
       </div>
     </div>
