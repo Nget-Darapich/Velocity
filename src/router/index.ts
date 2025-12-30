@@ -7,28 +7,23 @@ const router = createRouter({
       path: '/',
       component: () => import('@/layouts/AppLayout.vue'),
       children: [
-
-        { path: '', name: 'Home', component: () => import('@/views/HomePage.vue') },
-        { path: 'products', name: 'Products', component: () => import('@/views/ProductPage.vue') },
+        { path: '', name: 'home', component: () => import('@/views/HomePage.vue') },
         { path: 'cart', name: 'Cart', component: () => import('@/views/CartPage.vue') },
         { path: 'checkout', name: 'Checkout', component: () => import('@/views/CheckoutPage.vue') },
-
-
-        { path: '', name: 'home', component: () => import('@/views/HomePage.vue') },
-        {
-          path: 'products',
+        { 
+          path: 'products', 
           name: 'product',
           component: () => import('@/layouts/ProductLayout.vue'),
           children: [
-            {
-              path: '',
-              name: 'products',
+            { 
+              path: '', 
+              name: 'products', 
               component: () => import('@/views/ProductPage.vue')
             },
             // Single dynamic brand route instead of 3 separate routes
-            {
-              path: ':brand',
-              name: 'brand',
+            { 
+              path: ':brand', 
+              name: 'brand', 
               component: () => import('@/views/BrandPage.vue'),
               // Optional: Add validation to ensure brand exists
               beforeEnter: (to) => {
@@ -40,9 +35,9 @@ const router = createRouter({
               }
             },
             // Single dynamic category route instead of 4 separate routes
-            {
-              path: 'category/:category',
-              name: 'category',
+            { 
+              path: 'category/:category', 
+              name: 'category', 
               component: () => import('@/views/CategoryPage.vue'),
               // Optional: Add validation to ensure category exists
               beforeEnter: (to) => {
@@ -55,7 +50,6 @@ const router = createRouter({
             },
           ],
         },
-
       ],
     },
 

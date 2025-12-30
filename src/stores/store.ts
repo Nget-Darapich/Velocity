@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 
-// Types
+// --- TYPES ---
 export interface Product {
   id: string
   name: string
@@ -16,11 +16,28 @@ export interface ProductDetail extends Product {
   madeIn: string
 }
 
+export interface WishlistItem extends Product {
+  color: string
+  size: string
+  addedAt: number
+}
+
+export interface CartItem extends Product {
+  quantity: number
+}
+
 export type TabKey = 'featured' | 'newArrivals' | 'bestSeller'
 export type CategoryKey = 'athleticFootwear' | 'luxuryLeatherShoes' | 'sustainableFootwear' | 'sandalsAndslides'
 export type BrandKey = 'nike' | 'vans' | 'adidas'
 
-// Product Data
+// --- SHARED GLOBAL STATE ---
+// We keep these outside the function so the data is shared across all components
+// and persists when you navigate between pages.
+const selectedProduct = ref<ProductDetail | null>(null)
+const wishlistItems = ref<WishlistItem[]>([])
+const cartItems = ref<CartItem[]>([])
+
+// --- PRODUCT DATA ---
 export const products: Record<TabKey, Product[]> = {
   featured: [
     { id: '1', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
@@ -97,7 +114,6 @@ export const productsByBrand: Record<BrandKey, Product[]> = {
   })),
 }
 
-// Categories and Brands
 export const categories = [
   { id: 1, img: 'athletic_footwear.png', name: 'Athletic Footwear' },
   { id: 2, img: 'luxury_leather_shoes.png', name: 'Luxury Leather' },
@@ -111,7 +127,6 @@ export const brands = [
   { id: 3, img: 'adidas.png', name: 'Adidas' },
 ]
 
-// Tab definitions
 export const tabs: { id: TabKey; label: string }[] = [
   { id: 'featured', label: 'FEATURED' },
   { id: 'newArrivals', label: 'NEW ARRIVALS' },
@@ -131,11 +146,9 @@ export const brandTabs: { id: BrandKey; label: string }[] = [
   { id: 'adidas', label: 'ADIDAS' },
 ]
 
-// Store composable
+// --- STORE COMPOSABLE ---
 export function useProductStore() {
-  const selectedProduct = ref<ProductDetail | null>(null)
-
-  // Get all products as a flat array
+  // Get all products as a flat array for searching
   const allProducts = computed(() => {
     return [
       ...products.featured,
@@ -148,15 +161,56 @@ export function useProductStore() {
     ]
   })
 
-  // Find product by ID
   const findProductById = (id: string): Product | undefined => {
     return allProducts.value.find((p) => p.id === id)
   }
 
-  // Open quick view modal
+  // --- WISHLIST LOGIC ---
+  const isInWishlist = (productId: string): boolean => {
+    return wishlistItems.value.some((item) => item.id === productId)
+  }
+
+  const toggleWishlist = (productId: string) => {
+    const index = wishlistItems.value.findIndex((item) => item.id === productId)
+    if (index > -1) {
+      wishlistItems.value.splice(index, 1)
+    } else {
+      const product = findProductById(productId)
+      if (product) {
+        wishlistItems.value.push({
+          ...product,
+          color: 'White',
+          size: 'M',
+          addedAt: Date.now(),
+        })
+      }
+    }
+  }
+
+  const removeFromWishlist = (productId: string) => {
+    wishlistItems.value = wishlistItems.value.filter((item) => item.id !== productId)
+  }
+
+  const wishlistCount = computed(() => wishlistItems.value.length)
+
+  // --- CART LOGIC ---
+  const addToCart = (productId: string) => {
+    const existingItem = cartItems.value.find((item) => item.id === productId)
+    if (existingItem) {
+      existingItem.quantity++
+    } else {
+      const product = findProductById(productId)
+      if (product) {
+        cartItems.value.push({ ...product, quantity: 1 })
+      }
+    }
+  }
+
+  const cartCount = computed(() => cartItems.value.reduce((acc, item) => acc + item.quantity, 0))
+
+  // --- QUICK VIEW LOGIC ---
   const openQuickView = (productId: string, brandName: string = 'Nike') => {
     const product = findProductById(productId)
-
     if (product) {
       selectedProduct.value = {
         ...product,
@@ -169,16 +223,27 @@ export function useProductStore() {
     }
   }
 
-  // Close quick view modal
   const closeQuickView = () => {
     selectedProduct.value = null
   }
 
   return {
+    // State
     selectedProduct,
+    wishlistItems,
+    cartItems,
     allProducts,
-    findProductById,
+    // Wishlist Methods
+    wishlistCount,
+    isInWishlist,
+    toggleWishlist,
+    removeFromWishlist,
+    // Cart Methods
+    addToCart,
+    cartCount,
+    // Modal Methods
     openQuickView,
     closeQuickView,
+    findProductById,
   }
 }

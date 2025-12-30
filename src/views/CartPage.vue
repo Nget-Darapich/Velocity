@@ -215,7 +215,7 @@ const addToWishlist = (id: number) => {
           <div class="bg-white rounded-[10px] border border-[#E9E9E9] shadow-[0_6px_14px_rgba(0,0,0,0.15)]">
             <div class="px-6 py-5 border-b border-[#EAEAEA]">
               <p class="font-semibold text-[14px] text-[#222]">Order Summary</p>
-              <div class="mt-3 h-[2px] bg-[#6C63FF]"></div>
+              <div class="mt-3 h-0.5 bg-[#6C63FF]"></div>
             </div>
 
             <div class="px-6 py-6 space-y-4">
@@ -249,7 +249,7 @@ const addToWishlist = (id: number) => {
                 </button>
               </div>
 
-              <button class="mt-4 bg-[#FFB000] text-white px-5 py-2 rounded-[8px]" @click="goToProducts">
+              <button class="mt-4 bg-[#FFB000] text-white px-5 py-2 rounded-lg" @click="goToProducts">
                 Continue Shopping
               </button>
             </div>
