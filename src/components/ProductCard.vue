@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { Eye, Heart, ShoppingCart } from 'lucide-vue-next'
+import { useCartStore } from '@/stores/cart'
+
+
 
 const props = defineProps<{
   productImg: string
@@ -7,6 +10,8 @@ const props = defineProps<{
   productPrice: string
   productId: string
 }>()
+const cart = useCartStore()
+
 
 const imageUrl = new URL(`../assets/images/${props.productImg}`, import.meta.url).href
 const emit = defineEmits<{
@@ -16,6 +21,15 @@ const emit = defineEmits<{
 const openQuickView = () => {
   emit('quick-view', props.productId)
 }
+const addToCart = () => {
+  cart.addToCart({
+    id: Number(props.productId),
+    name: props.productName,
+    price: Number(props.productPrice.replace('$', '')),
+    img: props.productImg,
+  })
+}
+
 </script>
 
 <template>
@@ -29,8 +43,11 @@ const openQuickView = () => {
       <h3 class="">{{ props.productName }}</h3>
       <div class="bg-[#C9C8CB] w-[231px] h-0.5"></div>
       <div class="flex text-center h-[26px]">
-        <ShoppingCart :size="24" class="cursor-pointer" />
-        <p class="pt-0.5 pl-1">ADD TO CART</p>
+        <div class="flex cursor-pointer" @click="addToCart">
+           <ShoppingCart :size="24" />
+           <p class="pt-0.5 pl-1">ADD TO CART</p>
+        </div>
+
         <Heart :size="24" class="ml-auto cursor-pointer" />
         <Eye :size="24" class="ml-4 cursor-pointer" @click="openQuickView" />
       </div>

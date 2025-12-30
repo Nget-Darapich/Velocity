@@ -19,7 +19,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'close'): void
+  (e: 'add-to-cart', payload: { product: any; size: string; qty: number }): void
 }>()
+
 
 const selectedSize = ref(props.product.sizes[0])
 const quantity = ref(1)
@@ -35,9 +37,15 @@ watch(
 )
 
 const addToCart = () => {
-  alert(`Added ${quantity.value}x "${props.product.name}" (Size: ${selectedSize.value}) to cart!`)
+  emit('add-to-cart', {
+    product: props.product,
+    size: selectedSize.value,
+    qty: quantity.value,
+  })
   emit('close')
 }
+
+
 </script>
 
 <template>
