@@ -106,50 +106,11 @@ import CategoryCard from '@/components/home/CategoryCard.vue'
 import ProductCard from '@/components/ProductCard.vue'
 import { MoveRight } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
-
-const categories = [
-  { id: 1, img: 'athletic_footwear.png', name: 'Athletic Footwear' },
-  { id: 2, img: 'luxury_leather_shoes.png', name: 'Luxury Leather' },
-  { id: 3, img: 'sustainable_footwear.png', name: 'Sustainable Footwear' },
-  { id: 4, img: 'sandals&slides.png', name: 'Sandals & Slides' },
-]
-const brands = [
-  { id: 1, img: 'nike.png', name: 'Nike' },
-  { id: 2, img: 'vans.png', name: 'Vans' },
-  { id: 3, img: 'adidas.png', name: 'Adidas' },
-]
-
-type TabKey = 'featured' | 'newArrivals' | 'bestSeller'
-const tabs: { id: TabKey; label: string }[] = [
-  { id: 'featured', label: 'FEATURED' },
-  { id: 'newArrivals', label: 'NEW ARRIVALS' },
-  { id: 'bestSeller', label: 'BEST SELLER' },
-]
+import { categories, brands, tabs, products, type TabKey } from '@/stores/store'
 
 const activeTab = ref<TabKey>('featured')
 
 const currentProducts = computed(() => {
   return products[activeTab.value] || []
 })
-
-const products = {
-  featured: [
-    { id: 1, name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: 2, name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: 3, name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: 4, name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
-  ],
-  newArrivals: [
-    { id: 5, name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: 6, name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: 7, name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
-    { id: 8, name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-  ],
-  bestSeller: [
-    { id: 9, name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: 10, name: 'Waterproof White Sneaker', price: '$25.00', img: 'waterproof.png' },
-    { id: 11, name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: 12, name: 'Light Weight Running Shoes', price: '$25.00', img: 'running.png' },
-  ],
-}
 </script>
