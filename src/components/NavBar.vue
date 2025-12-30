@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { ChevronDown, Search, ShoppingCart, User } from 'lucide-vue-next'
+import { ChevronDown, Search, ShoppingCart, User, Heart } from 'lucide-vue-next'
 import SearchComponent from '@/components/SearchComponent.vue'
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useProductStore } from '@/stores/store'
 
 // State for dropdown visibility
 const showCategoryDropdown = ref(false)
 const showBrandDropdown = ref(false)
 const isSearchOpen = ref(false)
+
+// Get wishlist count from store
+const { wishlistCount } = useProductStore()
 
 // Functions to toggle dropdowns
 function toggleCategoryDropdown(show: boolean) {
@@ -110,13 +114,30 @@ onUnmounted(() => window.removeEventListener('keydown', closeOnEscape))
       <router-link to="/#" class="text-[24px] w-fit">About us</router-link>
     </div>
     
-    <div class="grid grid-cols-3 gap-[38.5px]">
-      <search :size="24" @click="isSearchOpen = true" aria-label="Open search" class="cursor-pointer" />
+    <div class="grid grid-cols-4 gap-[38.5px]">
+      <search 
+        :size="24" 
+        @click="isSearchOpen = true" 
+        aria-label="Open search" 
+        class="cursor-pointer hover:text-gray-600 transition" 
+      />
+      
+      <!-- Wishlist with Badge -->
+      <router-link to="/wishlist" class="relative">
+        <Heart :size="24" class="hover:text-red-500 transition" />
+        <span 
+          v-if="wishlistCount > 0"
+          class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+        >
+          {{ wishlistCount > 99 ? '99+' : wishlistCount }}
+        </span>
+      </router-link>
+      
       <router-link to="/#">
-        <shopping-cart :size="24" />
+        <shopping-cart :size="24" class="hover:text-gray-600 transition" />
       </router-link>
       <router-link to="/#">
-        <user :size="24" />
+        <user :size="24" class="hover:text-gray-600 transition" />
       </router-link>
     </div>
     

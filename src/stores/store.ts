@@ -20,7 +20,20 @@ export type TabKey = 'featured' | 'newArrivals' | 'bestSeller'
 export type CategoryKey = 'athleticFootwear' | 'luxuryLeatherShoes' | 'sustainableFootwear' | 'sandalsAndslides'
 export type BrandKey = 'nike' | 'vans' | 'adidas'
 
-// Product Data
+// Wishlist item type
+export interface WishlistItem extends Product {
+  color: string
+  size: string
+  addedAt: number
+}
+
+// --- SHARED GLOBAL STATE ---
+// These are defined outside the function so they are created only once.
+// All components calling useProductStore() will now reference these exact same variables.
+const selectedProduct = ref<ProductDetail | null>(null)
+const wishlistItems = ref<WishlistItem[]>([])
+
+// --- PRODUCT DATA ---
 export const products: Record<TabKey, Product[]> = {
   featured: [
     { id: '1', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
@@ -77,19 +90,19 @@ export const productsByCategory: Record<CategoryKey, Product[]> = {
 }
 
 export const productsByBrand: Record<BrandKey, Product[]> = {
-  nike: Array.from({ length: 10 }, (_, i) => ({
+  nike: Array.from({ length: 12 }, (_, i) => ({
     id: `nike-${i + 1}`,
     name: 'Classic White Tennis Sneakers',
     price: '$25.00',
     img: 'tennis.png',
   })),
-  vans: Array.from({ length: 10 }, (_, i) => ({
+  vans: Array.from({ length: 12 }, (_, i) => ({
     id: `vans-${i + 1}`,
     name: 'Premium Leather Chelsea Boots',
     price: '$25.00',
     img: 'chelsea.png',
   })),
-  adidas: Array.from({ length: 10 }, (_, i) => ({
+  adidas: Array.from({ length: 12 }, (_, i) => ({
     id: `adidas-${i + 1}`,
     name: 'Waterproof White Sneaker',
     price: '$25.00',
@@ -131,10 +144,9 @@ export const brandTabs: { id: BrandKey; label: string }[] = [
   { id: 'adidas', label: 'ADIDAS' },
 ]
 
-// Store composable
+// --- STORE COMPOSABLE ---
 export function useProductStore() {
-  const selectedProduct = ref<ProductDetail | null>(null)
-
+  
   // Get all products as a flat array
   const allProducts = computed(() => {
     return [
@@ -152,6 +164,43 @@ export function useProductStore() {
   const findProductById = (id: string): Product | undefined => {
     return allProducts.value.find((p) => p.id === id)
   }
+
+  // Check if product is in wishlist
+  const isInWishlist = (productId: string): boolean => {
+    return wishlistItems.value.some((item) => item.id === productId)
+  }
+
+  // Add to wishlist
+  const addToWishlist = (productId: string) => {
+    if (isInWishlist(productId)) return
+
+    const product = findProductById(productId)
+    if (product) {
+      wishlistItems.value.push({
+        ...product,
+        color: 'White', 
+        size: 'M',
+        addedAt: Date.now(),
+      })
+    }
+  }
+
+  // Remove from wishlist
+  const removeFromWishlist = (productId: string) => {
+    wishlistItems.value = wishlistItems.value.filter((item) => item.id !== productId)
+  }
+
+  // Toggle wishlist
+  const toggleWishlist = (productId: string) => {
+    if (isInWishlist(productId)) {
+      removeFromWishlist(productId)
+    } else {
+      addToWishlist(productId)
+    }
+  }
+
+  // Get wishlist count
+  const wishlistCount = computed(() => wishlistItems.value.length)
 
   // Open quick view modal
   const openQuickView = (productId: string, brandName: string = 'Nike') => {
@@ -177,7 +226,13 @@ export function useProductStore() {
   return {
     selectedProduct,
     allProducts,
+    wishlistItems,
+    wishlistCount,
     findProductById,
+    isInWishlist,
+    addToWishlist,
+    removeFromWishlist,
+    toggleWishlist,
     openQuickView,
     closeQuickView,
   }
