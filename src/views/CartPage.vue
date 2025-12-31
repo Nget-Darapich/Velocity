@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useCartStore } from '@/stores/cart'
 import promoIcon from '@/assets/images/promo-icon.png'
 import { useRouter } from 'vue-router'
+import BreadCrumb from '@/components/BreadCrumb.vue'
 
 const cart = useCartStore()
 const router = useRouter()
@@ -66,18 +67,12 @@ const addToWishlist = (id: number) => {
 <template>
   <div class="min-h-screen">
     <!-- TITLE + BREADCRUMB -->
-    <div class="px-[60px] pt-8">
-      <h1 class="text-[38px] font-semibold text-[#222]">Order Cart</h1>
-
-      <div class="mt-2 text-[13px]">
-        <span class="text-[#111]">Home</span>
-        <span class="mx-2 text-[#444]">&gt;</span>
-        <span class="text-[#FF8000]">My Cart</span>
-      </div>
+    <div class="px-[62px]">
+      <BreadCrumb class="ml-0" />
     </div>
 
     <!-- MAIN CONTENT -->
-    <div class="px-[60px] pt-10 pb-16">
+    <div class="px-[62px] pt-10 pb-16">
       <div class="grid grid-cols-12 gap-10">
         <!-- LEFT SIDE -->
         <div class="col-span-7 space-y-10">

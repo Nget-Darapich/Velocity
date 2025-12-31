@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
-
+import BreadCrumb from '@/components/BreadCrumb.vue'
 import promoIcon from '@/assets/images/promo-icon.png'
 import checkoutImg from '@/assets/images/checkout.png'
 import mastercardImg from '@/assets/images/mastercard.png'
@@ -54,18 +54,12 @@ const checkoutOrder = () => {
 <template>
   <div class="min-h-screen bg-white">
     <!-- TITLE + BREADCRUMB -->
-    <div class="px-[60px] pt-8">
-      <h1 class="text-[38px] font-semibold text-[#222]">Checkout</h1>
-
-      <div class="mt-2 text-[13px]">
-        <span class="text-[#111]">Home</span>
-        <span class="mx-2 text-[#444]">&gt;</span>
-        <span class="text-[#FF8000]">Classic White Tennis Sneakers</span>
-      </div>
+    <div class="px-[62px]">
+      <BreadCrumb />
     </div>
 
     <!-- MAIN -->
-    <div class="px-[60px] pt-10 pb-16">
+    <div class="px-[62px] pt-10 pb-16">
       <div class="grid grid-cols-12 gap-10">
         <!-- LEFT BIG WHITE CARD -->
         <div

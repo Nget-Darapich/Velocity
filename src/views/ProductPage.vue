@@ -148,12 +148,27 @@ const currentProductsInBrand = computed(() => productsByBrand[activeTabForBrand.
 /** modal state from product store */
 const { selectedProduct, openQuickView, closeQuickView } = useProductStore()
 
+interface QuickViewPayload {
+  product: {
+    id: string | number;
+    name: string;
+    price: string | number;
+    img: string;
+  };
+  size: string;
+  qty: number;
+}
+
 /**  QuickView -> Add to Cart */
-const handleAddToCartFromQuickView = ({ product, size, qty }: any) => {
+const handleAddToCartFromQuickView = ({ product, size, qty }: QuickViewPayload) => {
   cart.addToCart({
-    id: Number(product.id),
+    // Ensure ID is a number as required by cart.ts
+    id: typeof product.id === 'string' ? parseInt(product.id) : product.id,
     name: product.name,
-    price: Number(String(product.price).replace('$', '')),
+    // Ensure Price is a number (removes '$' if it's a string)
+    price: typeof product.price === 'string' 
+      ? parseFloat(product.price.replace('$', '')) 
+      : product.price,
     img: product.img,
     size,
     quantity: qty,

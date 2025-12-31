@@ -32,7 +32,7 @@ const addToCart = () => {
 
 <template>
   <div
-    class="w-full max-w-[900px] h-[180px] bg-white rounded-2xl shadow-md px-6 py-4 flex items-center gap-6"
+    class="w-full max-w-[900px] h-[180px] bg-white border-gray-50 rounded-2xl shadow-[0_6px_14px_rgba(0,0,0,0.15)] px-6 py-4 flex items-center gap-6"
   >
     <!-- Product Image -->
     <img

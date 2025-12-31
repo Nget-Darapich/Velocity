@@ -1,5 +1,5 @@
 <template>
-  <BreadCrumb class="" />
+  <BreadCrumb class="ml-[62px]" />
   <div class="grow grid grid-cols-6 gap-[35px] ml-[50px] mt-5">
     <div class="col-span-1">
       <FilterProduct/>

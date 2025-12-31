@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import WishlistCard from '@/components/WishlistCard.vue'
 import { useProductStore } from '@/stores/store'
+import { useCartStore } from '@/stores/cart'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import BreadCrumb from '@/components/BreadCrumb.vue'
 
 const router = useRouter()
 const { wishlistItems, removeFromWishlist } = useProductStore()
+const cartStore = useCartStore()
 
 // Convert price string to number (e.g., "$25.00" -> 25)
 const parsePrice = (priceStr: string): number => {
@@ -30,14 +33,29 @@ const handleAddToCart = (productId: string) => {
 const goToProducts = () => {
   router.push('/products')
 }
+
+const moveAllToCart = () => {
+  wishlistItems.value.forEach((item) => {
+    cartStore.addToCart({
+      id: Number(item.id),
+      name: item.name,
+      // Use your existing parsePrice helper
+      price: parsePrice(item.price), 
+      img: item.img,
+      size: item.size,
+      quantity: 1
+    })
+  })
+  // Clear the wishlist after moving
+  wishlistItems.value = []
+}
 </script>
 
 <template>
-  <div class="max-w-[1200px] mx-auto px-6 py-10">
-    <h1 class="text-4xl font-bold mb-8">My Wishlist</h1>
-    
+  <div class="px-[62px]">
+    <BreadCrumb class="pb-10" />
     <!-- Empty State -->
-    <div v-if="wishlistItems.length === 0" class="text-center py-20">
+    <div v-if="wishlistItems.length === 0" class="text-center py-20 pl-0">
       <div class="mb-6">
         <svg 
           class="w-24 h-24 mx-auto text-gray-300" 
@@ -81,7 +99,7 @@ const goToProducts = () => {
       </div>
 
       <!-- Summary -->
-      <div class="max-w-[900px] bg-gray-50 rounded-2xl p-6 mt-6">
+      <div class="max-w-[900px] bg-gray-50 border border-gray-200 rounded-2xl shadow-[0_6px_14px_rgba(0,0,0,0.15)] p-6 mt-6">
         <div class="flex justify-between items-center mb-4">
           <span class="text-lg font-semibold">Total Items:</span>
           <span class="text-lg">{{ wishlistItems.length }}</span>
@@ -92,7 +110,7 @@ const goToProducts = () => {
         </div>
         <button
           class="w-full mt-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition font-semibold"
-          @click="() => console.log('Move all to cart')"
+          @click="moveAllToCart"
         >
           Move All to Cart
         </button>
