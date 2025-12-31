@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Eye, Heart, ShoppingCart } from 'lucide-vue-next'
 import { useCartStore } from '@/stores/cart'
-import { useProductStore } from '@/stores/store' //
+import { useProductStore } from '@/stores/store'
+import { computed } from 'vue'
 
 const props = defineProps<{
   productImg: string
@@ -13,7 +14,10 @@ const props = defineProps<{
 const cart = useCartStore()
 const { toggleWishlist, isInWishlist } = useProductStore() //
 
-const imageUrl = new URL(`../assets/images/${props.productImg}`, import.meta.url).href
+const imageUrl = computed(() =>
+  new URL(`../assets/images/${props.productImg}`, import.meta.url).href
+)
+
 const emit = defineEmits<{
   (e: 'quick-view', id: string): void
 }>()
@@ -28,8 +32,11 @@ const addToCart = () => {
     name: props.productName,
     price: Number(props.productPrice.replace('$', '')),
     img: props.productImg,
+    size: 'M',
+    quantity: 1,
   })
 }
+
 </script>
 
 <template>
@@ -48,13 +55,13 @@ const addToCart = () => {
            <p class="pt-0.5 pl-1">ADD TO CART</p>
         </div>
 
-        <Heart 
-          :size="24" 
-          class="ml-auto cursor-pointer transition-colors" 
+        <Heart
+          :size="24"
+          class="ml-auto cursor-pointer transition-colors"
           :class="{ 'fill-red-500 text-[#992020]': isInWishlist(props.productId) }"
-          @click="toggleWishlist(props.productId)" 
+          @click="toggleWishlist(props.productId)"
         />
-        
+
         <Eye :size="24" class="ml-4 cursor-pointer" @click="openQuickView" />
       </div>
     </div>
