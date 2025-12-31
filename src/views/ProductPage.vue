@@ -3,10 +3,11 @@
     <img src="@/assets/images/poster1.png" alt="" class="w-[734px] border rounded-[30px]" />
     <img src="@/assets/images/poster2.png" alt="" class="w-[734px] border rounded-[30px]" />
   </div>
-  
+
   <!-- Sneakers & Kicks Section -->
   <div class="flex flex-col justify-center items-center gap-[30px] pt-10 pb-10">
     <p class="text-5xl font-medium">Sneakers & Kicks</p>
+
     <div class="flex justify-center space-x-8">
       <button
         v-for="tab in tabs"
@@ -39,6 +40,7 @@
   <!-- All Categories Section -->
   <div class="flex flex-col justify-center items-center gap-[30px] pb-10">
     <p class="text-5xl font-medium">All Categories</p>
+
     <div class="flex justify-center space-x-8">
       <button
         v-for="tab in categoryTabs"
@@ -71,6 +73,7 @@
   <!-- Trending Brands Section -->
   <div class="flex flex-col justify-center items-center gap-[30px] pt-10 pb-10">
     <p class="text-5xl font-medium">Trending Brands</p>
+
     <div class="flex justify-center space-x-8">
       <button
         v-for="tab in brandTabs"
@@ -100,12 +103,13 @@
     </div>
   </div>
 
-  <!-- Quick View Modal -->
+  <!--  Quick View Modal -->
   <QuickViewModal
     v-if="selectedProduct"
     :is-open="!!selectedProduct"
     :product="selectedProduct"
     @close="closeQuickView"
+    @add-to-cart="handleAddToCartFromQuickView"
   />
 </template>
 
@@ -113,8 +117,8 @@
 import ProductCard from '@/components/ProductCard.vue'
 import QuickViewModal from '@/components/QuickViewModal.vue'
 import { computed, ref } from 'vue'
+import { useCartStore } from '@/stores/cart'
 
-// Import everything from store - no more local data!
 import {
   tabs,
   categoryTabs,
@@ -128,24 +132,31 @@ import {
   type BrandKey,
 } from '@/stores/store'
 
-// Active tab state
+/** cart store */
+const cart = useCartStore()
+
+/** Active tab state */
 const activeTab = ref<TabKey>('featured')
 const activeTabForCategory = ref<CategoryKey>('athleticFootwear')
 const activeTabForBrand = ref<BrandKey>('nike')
 
-// Computed properties for current products based on active tabs
-const currentProducts = computed(() => {
-  return products[activeTab.value] || []
-})
+/** Computed lists */
+const currentProducts = computed(() => products[activeTab.value] || [])
+const currentProductsInCategory = computed(() => productsByCategory[activeTabForCategory.value] || [])
+const currentProductsInBrand = computed(() => productsByBrand[activeTabForBrand.value] || [])
 
-const currentProductsInCategory = computed(() => {
-  return productsByCategory[activeTabForCategory.value] || []
-})
-
-const currentProductsInBrand = computed(() => {
-  return productsByBrand[activeTabForBrand.value] || []
-})
-
-// Use the store composable for modal management
+/** modal state from product store */
 const { selectedProduct, openQuickView, closeQuickView } = useProductStore()
+
+/**  QuickView -> Add to Cart */
+const handleAddToCartFromQuickView = ({ product, size, qty }: any) => {
+  cart.addToCart({
+    id: Number(product.id),
+    name: product.name,
+    price: Number(String(product.price).replace('$', '')),
+    img: product.img,
+    size,
+    quantity: qty,
+  })
+}
 </script>

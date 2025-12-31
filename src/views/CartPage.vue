@@ -15,7 +15,7 @@ const shipping = computed(() => 4)
 const total = computed(() => cart.subtotal - discount.value + shipping.value)
 
 const clearCart = () => {
-  // ✅ requires cart.clearCart() action in store
+  // requires cart.clearCart() action in store
   cart.clearCart()
 }
 
@@ -239,7 +239,7 @@ const addToWishlist = (id: number) => {
                 <span>${{ total }}</span>
               </div>
 
-              <!-- ✅ CHECKOUT BAR (NOW NAVIGATES) -->
+              <!-- CHECKOUT BAR -->
               <div class="mt-6 bg-[#4BE3C3] rounded-[10px] px-6 py-4 flex justify-between items-center">
                 <span class="font-semibold">${{ total }}</span>
 
