@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ref, computed } from 'vue'
 
 // --- TYPES ---
@@ -27,7 +28,11 @@ export interface CartItem extends Product {
 }
 
 export type TabKey = 'featured' | 'newArrivals' | 'bestSeller'
-export type CategoryKey = 'athleticFootwear' | 'luxuryLeatherShoes' | 'sustainableFootwear' | 'sandalsAndslides'
+export type CategoryKey =
+  | 'athleticFootwear'
+  | 'luxuryLeatherShoes'
+  | 'sustainableFootwear'
+  | 'sandalsAndslides'
 export type BrandKey = 'nike' | 'vans' | 'adidas'
 
 // --- SHARED GLOBAL STATE ---
@@ -36,6 +41,7 @@ export type BrandKey = 'nike' | 'vans' | 'adidas'
 const selectedProduct = ref<ProductDetail | null>(null)
 const wishlistItems = ref<WishlistItem[]>([])
 const cartItems = ref<CartItem[]>([])
+const selectedProductDetail = ref<ProductDetail | null>(null) //  Product Detail
 
 // --- PRODUCT DATA ---
 export const products: Record<TabKey, Product[]> = {
@@ -164,6 +170,41 @@ export function useProductStore() {
   const findProductById = (id: string): Product | undefined => {
     return allProducts.value.find((p) => p.id === id)
   }
+  // Create a map or function to get detailed product info
+  const getProductDetail = (id: string): ProductDetail | undefined => {
+    const product = findProductById(id)
+    if (!product) return undefined
+
+    // Based on the product ID, determine the category and brand
+    let category = 'Athletic Footwear'
+    let brand = 'Nike'
+    const description = 'Classic sneakers with premium materials and comfort.'
+    const madeIn = 'United States'
+
+    if (product.id.includes('nike')) brand = 'Nike'
+    if (product.id.includes('vans')) brand = 'Vans'
+    if (product.id.includes('adidas')) brand = 'Adidas'
+
+
+    // Determine category based on which array the product came from
+    if (productsByCategory.athleticFootwear.some((p) => p.id === id)) {
+      category = 'Athletic Footwear'
+    } else if (productsByCategory.luxuryLeatherShoes.some((p) => p.id === id)) {
+      category = 'Luxury Leather Shoes'
+    } else if (productsByCategory.sustainableFootwear.some((p) => p.id === id)) {
+      category = 'Sustainable Footwear'
+    } else if (productsByCategory.sandalsAndslides.some((p) => p.id === id)) {
+      category = 'Sandals & Slides'
+    }
+    return {
+      ...product,
+      description,
+      sizes: ['S', 'M', 'L', 'XL'], // Default sizes
+      brand,
+      category,
+      madeIn,
+    }
+  }
 
   // --- WISHLIST LOGIC ---
   const isInWishlist = (productId: string): boolean => {
@@ -227,9 +268,22 @@ export function useProductStore() {
     selectedProduct.value = null
   }
 
+  //--- PRODUCT DETAIL LOGIC ---
+  const openProductDetail = (productId: string, brandName = 'Nike') => {
+    const productDetail = getProductDetail(productId)
+    if (productDetail) {
+      selectedProductDetail.value = productDetail
+    }
+  }
+
+  const closeProductDetail = () => {
+    selectedProductDetail.value = null
+  }
+
   return {
     // State
     selectedProduct,
+    selectedProductDetail, //  Product Detail
     wishlistItems,
     cartItems,
     allProducts,
@@ -244,6 +298,10 @@ export function useProductStore() {
     // Modal Methods
     openQuickView,
     closeQuickView,
+    // Product Detail
+    openProductDetail,
+    closeProductDetail,
     findProductById,
+    getProductDetail,
   }
 }

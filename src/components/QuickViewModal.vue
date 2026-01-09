@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <!-- QuickViewModal.vue -->
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
@@ -21,7 +22,6 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'add-to-cart', payload: { product: any; size: string; qty: number }): void
 }>()
-
 
 const product = computed(() => props.product)
 
@@ -67,22 +67,37 @@ const addToCart = () => {
     @click.self="emit('close')"
   >
     <!-- Modal Content -->
-    <div class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl">
+    <div
+      class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl"
+    >
       <!-- Close Button -->
       <button
         @click="emit('close')"
         class="absolute top-4 right-4 z-10 text-gray-500 hover:text-gray-800"
         aria-label="Close"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       </button>
 
       <div class="flex flex-col md:flex-row p-6 gap-6">
         <!-- Image Section -->
         <div class="md:w-1/2 flex flex-col">
-          <div class="aspect-square bg-gray-100 rounded-xl overflow-hidden mb-4 flex items-center justify-center">
+          <div
+            class="aspect-square bg-gray-100 rounded-xl overflow-hidden mb-4 flex items-center justify-center"
+          >
             <img
               v-if="imageUrl"
               :src="imageUrl"
@@ -99,7 +114,9 @@ const addToCart = () => {
         <div class="md:w-1/2 flex flex-col">
           <h2 class="text-xl font-bold text-gray-900">{{ product.name }}</h2>
 
-          <span class="mt-2 inline-block px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md">
+          <span
+            class="mt-2 inline-block px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md"
+          >
             In stock
           </span>
 
