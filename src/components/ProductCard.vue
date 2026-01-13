@@ -3,6 +3,11 @@ import { Eye, Heart, ShoppingCart } from 'lucide-vue-next'
 import { useCartStore } from '@/stores/cart'
 import { useProductStore } from '@/stores/store'
 import { computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+
+const router = useRouter()
+const route = useRoute()
+
 
 const props = defineProps<{
   productImg: string
@@ -14,8 +19,8 @@ const props = defineProps<{
 const cart = useCartStore()
 const { toggleWishlist, isInWishlist } = useProductStore() //
 
-const imageUrl = computed(() =>
-  new URL(`../assets/images/${props.productImg}`, import.meta.url).href
+const imageUrl = computed(
+  () => new URL(`../assets/images/${props.productImg}`, import.meta.url).href,
 )
 
 const emit = defineEmits<{
@@ -24,6 +29,17 @@ const emit = defineEmits<{
 
 const openQuickView = () => {
   emit('quick-view', props.productId)
+}
+const openProductDetail = () => {
+  router.push({
+    name: 'detail',
+    params: { id: props.productId },
+    query: {
+      from: route.name?.toString(), // home | products | brand | category
+      brand: route.params.brand,           // PASS BRAND
+      category: route.params.category,     // PASS CATEGORY
+    },
+  })
 }
 
 const addToCart = () => {
@@ -36,23 +52,26 @@ const addToCart = () => {
     quantity: 1,
   })
 }
-
 </script>
 
 <template>
   <div class="h-[455px] w-[231px] flex flex-col">
     <div
-      class="h-80 flex justify-center bg-no-repeat"
+      class="h-80 flex justify-center bg-no-repeat cursor-pointer"
       :style="{ backgroundImage: `url(${imageUrl})` }"
+      @click="openProductDetail"
     ></div>
+
     <div class="h-[135px] flex flex-col gap-2.5 pt-[5px] font-semibold">
       <p class="text-[#969494]">{{ props.productPrice }}</p>
-      <h3 class="">{{ props.productName }}</h3>
+      <h3 class="cursor-pointer hover:underline" @click="openProductDetail">
+        {{ props.productName }}
+      </h3>
       <div class="bg-[#C9C8CB] w-[231px] h-0.5"></div>
       <div class="flex text-center h-[26px]">
         <div class="flex cursor-pointer" @click="addToCart">
-           <ShoppingCart :size="24" />
-           <p class="pt-0.5 pl-1">ADD TO CART</p>
+          <ShoppingCart :size="24" />
+          <p class="pt-0.5 pl-1">ADD TO CART</p>
         </div>
 
         <Heart

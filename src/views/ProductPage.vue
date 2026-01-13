@@ -33,6 +33,7 @@
         :product-name="item.name"
         :product-price="item.price"
         @quick-view="openQuickView"
+        @view-detail="goToProductDetail(Number(item.id))"
       />
     </div>
   </div>
@@ -118,6 +119,8 @@ import ProductCard from '@/components/ProductCard.vue'
 import QuickViewModal from '@/components/QuickViewModal.vue'
 import { computed, ref } from 'vue'
 import { useCartStore } from '@/stores/cart'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 import {
   tabs,
@@ -131,6 +134,7 @@ import {
   type CategoryKey,
   type BrandKey,
 } from '@/stores/store'
+
 
 /** cart store */
 const cart = useCartStore()
@@ -158,6 +162,9 @@ interface QuickViewPayload {
   size: string;
   qty: number;
 }
+const goToProductDetail = (id: number) => {
+  router.push(`/product/${id}`)
+}
 
 /**  QuickView -> Add to Cart */
 const handleAddToCartFromQuickView = ({ product, size, qty }: QuickViewPayload) => {
@@ -166,8 +173,8 @@ const handleAddToCartFromQuickView = ({ product, size, qty }: QuickViewPayload) 
     id: typeof product.id === 'string' ? parseInt(product.id) : product.id,
     name: product.name,
     // Ensure Price is a number (removes '$' if it's a string)
-    price: typeof product.price === 'string' 
-      ? parseFloat(product.price.replace('$', '')) 
+    price: typeof product.price === 'string'
+      ? parseFloat(product.price.replace('$', ''))
       : product.price,
     img: product.img,
     size,
