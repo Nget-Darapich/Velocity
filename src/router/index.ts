@@ -78,6 +78,20 @@ const router = createRouter({
         { path: 'signup', name: 'signup', component: () => import('@/views/SignupPage.vue') },
       ],
     },
+    // Admin side
+  {
+    path: "/admin",
+    component: () => import("@/layouts/AdminLayout.vue"),
+    children: [
+      { path: "", component: () => import("@/views/admin/AdminDashboard.vue") },
+      { path: "products", component: () => import("@/views/admin/AdminProducts.vue") },
+      { path: "inventory", component: () => import("@/views/admin/AdminInventory.vue") },
+      { path: "category", component: () => import("@/views/admin/AdminProducts.vue") },
+      { path: "orders", component: () => import("@/views/admin/AdminOrders.vue") },
+      { path: "purchases", component: () => import("@/views/admin/AdminPurchases.vue") },
+      { path: "invoices", component: () => import("@/views/admin/AdminInvoices.vue") },
+    ],
+  },
   ],
 })
 
