@@ -118,7 +118,7 @@
 import ProductCard from '@/components/ProductCard.vue'
 import QuickViewModal from '@/components/QuickViewModal.vue'
 import { computed, ref } from 'vue'
-import { useCartStore } from '@/stores/cart'
+import { useCartStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 

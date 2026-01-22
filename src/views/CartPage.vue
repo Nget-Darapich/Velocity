@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useCartStore } from '@/stores/cart'
+import { useCartStore } from '@/stores/store'
 import promoIcon from '@/assets/images/promo-icon.png'
 import { useRouter } from 'vue-router'
 import BreadCrumb from '@/components/BreadCrumb.vue'

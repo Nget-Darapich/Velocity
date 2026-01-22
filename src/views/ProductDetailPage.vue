@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useProductStore } from '@/stores/store'
-import { useCartStore } from '@/stores/cart'
+import { useCartStore } from '@/stores/store'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 
 const route = useRoute()

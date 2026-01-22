@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useCartStore } from '@/stores/cart'
+import { useCartStore } from '@/stores/store'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 import promoIcon from '@/assets/images/promo-icon.png'
 import checkoutImg from '@/assets/images/checkout.png'
@@ -195,7 +195,7 @@ const checkoutOrder = () => {
                 <label class="block text-[13px] text-white/80 mb-3">Name on card</label>
                 <input
                   v-model="cardName"
-                  class="w-full h-[48px] rounded-xl bg-white/20 px-4 text-[13px] outline-none placeholder:text-white/60"
+                  class="w-full h-12 rounded-xl bg-white/20 px-4 text-[13px] outline-none placeholder:text-white/60"
                   placeholder="Name"
                 />
               </div>
@@ -204,7 +204,7 @@ const checkoutOrder = () => {
                 <label class="block text-[13px] text-white/80 mb-3">Card Number</label>
                 <input
                   v-model="cardNumber"
-                  class="w-full h-[48px] rounded-xl bg-white/20 px-4 text-[13px] outline-none placeholder:text-white/60"
+                  class="w-full h-12 rounded-xl bg-white/20 px-4 text-[13px] outline-none placeholder:text-white/60"
                   placeholder="1111 2222 3333 4444"
                 />
               </div>
@@ -214,7 +214,7 @@ const checkoutOrder = () => {
                   <label class="block text-[13px] text-white/80 mb-3">Expiration date</label>
                   <input
                     v-model="exp"
-                    class="w-full h-[48px] rounded-xl bg-white/20 px-4 text-[13px] outline-none placeholder:text-white/60"
+                    class="w-full h-12 rounded-xl bg-white/20 px-4 text-[13px] outline-none placeholder:text-white/60"
                     placeholder="mm/yy"
                   />
                 </div>
@@ -223,7 +223,7 @@ const checkoutOrder = () => {
                   <label class="block text-[13px] text-white/80 mb-3">CVV</label>
                   <input
                     v-model="cvv"
-                    class="w-full h-[48px] rounded-xl bg-white/20 px-4 text-[13px] outline-none placeholder:text-white/60"
+                    class="w-full h-12 rounded-xl bg-white/20 px-4 text-[13px] outline-none placeholder:text-white/60"
                     placeholder="123"
                   />
                 </div>

@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 // --- TYPES ---
 export interface Product {
@@ -23,8 +23,13 @@ export interface WishlistItem extends Product {
   addedAt: number
 }
 
-export interface CartItem extends Product {
+export interface CartItem {
+  id: number
+  name: string
+  price: number
   quantity: number
+  img: string
+  size?: string
 }
 
 export type TabKey = 'featured' | 'newArrivals' | 'bestSeller'
@@ -34,14 +39,6 @@ export type CategoryKey =
   | 'sustainableFootwear'
   | 'sandalsAndslides'
 export type BrandKey = 'nike' | 'vans' | 'adidas'
-
-// --- SHARED GLOBAL STATE ---
-// We keep these outside the function so the data is shared across all components
-// and persists when you navigate between pages.
-const selectedProduct = ref<ProductDetail | null>(null)
-const wishlistItems = ref<WishlistItem[]>([])
-const cartItems = ref<CartItem[]>([])
-const selectedProductDetail = ref<ProductDetail | null>(null) //  Product Detail
 
 // --- PRODUCT DATA ---
 export const products: Record<TabKey, Product[]> = {
@@ -152,9 +149,43 @@ export const brandTabs: { id: BrandKey; label: string }[] = [
   { id: 'adidas', label: 'ADIDAS' },
 ]
 
-// --- STORE COMPOSABLE ---
-export function useProductStore() {
-  // Get all products as a flat array for searching
+// --- HELPER FUNCTIONS FOR LOCALSTORAGE ---
+const CART_STORAGE_KEY = 'velocity_cart_items'
+const WISHLIST_STORAGE_KEY = 'velocity_wishlist_items'
+
+function loadCart(): CartItem[] {
+  try {
+    return JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function saveCart(items: CartItem[]) {
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
+}
+
+function loadWishlist(): WishlistItem[] {
+  try {
+    return JSON.parse(localStorage.getItem(WISHLIST_STORAGE_KEY) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function saveWishlist(items: WishlistItem[]) {
+  localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(items))
+}
+
+// --- PINIA STORE ---
+export const useProductStore = defineStore('product', () => {
+  // --- STATE ---
+  const selectedProduct = ref<ProductDetail | null>(null)
+  const selectedProductDetail = ref<ProductDetail | null>(null)
+  const wishlistItems = ref<WishlistItem[]>(loadWishlist())
+  const cartItems = ref<CartItem[]>(loadCart())
+
+  // --- COMPUTED / GETTERS ---
   const allProducts = computed(() => {
     return [
       ...products.featured,
@@ -167,15 +198,32 @@ export function useProductStore() {
     ]
   })
 
+  const wishlistCount = computed(() => wishlistItems.value.length)
+  
+  const cartCount = computed(() => 
+    cartItems.value.reduce((sum, item) => sum + item.quantity, 0)
+  )
+  
+  const subtotal = computed(() => 
+    cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  )
+  
+  const totalItems = computed(() => 
+    cartItems.value.reduce((sum, item) => sum + item.quantity, 0)
+  )
+
+  // Expose items as a computed property for template access
+  const items = computed(() => cartItems.value)
+
+  // --- PRODUCT METHODS ---
   const findProductById = (id: string): Product | undefined => {
     return allProducts.value.find((p) => p.id === id)
   }
-  // Create a map or function to get detailed product info
+
   const getProductDetail = (id: string): ProductDetail | undefined => {
     const product = findProductById(id)
     if (!product) return undefined
 
-    // Based on the product ID, determine the category and brand
     let category = 'Athletic Footwear'
     let brand = 'Nike'
     const description = 'Classic sneakers with premium materials and comfort.'
@@ -185,8 +233,6 @@ export function useProductStore() {
     if (product.id.includes('vans')) brand = 'Vans'
     if (product.id.includes('adidas')) brand = 'Adidas'
 
-
-    // Determine category based on which array the product came from
     if (productsByCategory.athleticFootwear.some((p) => p.id === id)) {
       category = 'Athletic Footwear'
     } else if (productsByCategory.luxuryLeatherShoes.some((p) => p.id === id)) {
@@ -196,17 +242,18 @@ export function useProductStore() {
     } else if (productsByCategory.sandalsAndslides.some((p) => p.id === id)) {
       category = 'Sandals & Slides'
     }
+
     return {
       ...product,
       description,
-      sizes: ['S', 'M', 'L', 'XL'], // Default sizes
+      sizes: ['S', 'M', 'L', 'XL'],
       brand,
       category,
       madeIn,
     }
   }
 
-  // --- WISHLIST LOGIC ---
+  // --- WISHLIST ACTIONS ---
   const isInWishlist = (productId: string): boolean => {
     return wishlistItems.value.some((item) => item.id === productId)
   }
@@ -226,30 +273,70 @@ export function useProductStore() {
         })
       }
     }
+    saveWishlist(wishlistItems.value)
   }
 
   const removeFromWishlist = (productId: string) => {
     wishlistItems.value = wishlistItems.value.filter((item) => item.id !== productId)
+    saveWishlist(wishlistItems.value)
   }
 
-  const wishlistCount = computed(() => wishlistItems.value.length)
+  const clearWishlist = () => {
+    wishlistItems.value = []
+    localStorage.removeItem(WISHLIST_STORAGE_KEY)
+  }
 
-  // --- CART LOGIC ---
-  const addToCart = (productId: string) => {
-    const existingItem = cartItems.value.find((item) => item.id === productId)
-    if (existingItem) {
-      existingItem.quantity++
+  // --- CART ACTIONS ---
+  const addToCart = (payload: {
+    id: number
+    name: string
+    price: number
+    img: string
+    size?: string
+    quantity?: number
+  }) => {
+    const qty = payload.quantity ?? 1
+
+    const existing = cartItems.value.find(
+      (item) => item.id === payload.id && (item.size ?? '') === (payload.size ?? '')
+    )
+
+    if (existing) {
+      existing.quantity += qty
     } else {
-      const product = findProductById(productId)
-      if (product) {
-        cartItems.value.push({ ...product, quantity: 1 })
-      }
+      cartItems.value.push({
+        id: payload.id,
+        name: payload.name,
+        price: payload.price,
+        img: payload.img,
+        size: payload.size,
+        quantity: qty,
+      })
     }
+
+    saveCart(cartItems.value)
   }
 
-  const cartCount = computed(() => cartItems.value.reduce((acc, item) => acc + item.quantity, 0))
+  const removeItem = (id: number, size?: string) => {
+    cartItems.value = cartItems.value.filter(
+      (item) => !(item.id === id && (item.size ?? '') === (size ?? ''))
+    )
+    saveCart(cartItems.value)
+  }
 
-  // --- QUICK VIEW LOGIC ---
+  const updateQuantity = (id: number, size: string | undefined, qty: number) => {
+    const item = cartItems.value.find((i) => i.id === id && (i.size ?? '') === (size ?? ''))
+    if (!item) return
+    item.quantity = Math.max(1, qty)
+    saveCart(cartItems.value)
+  }
+
+  const clearCart = () => {
+    cartItems.value = []
+    localStorage.removeItem(CART_STORAGE_KEY)
+  }
+
+  // --- MODAL ACTIONS ---
   const openQuickView = (productId: string, brandName: string = 'Nike') => {
     const product = findProductById(productId)
     if (product) {
@@ -268,7 +355,7 @@ export function useProductStore() {
     selectedProduct.value = null
   }
 
-  //--- PRODUCT DETAIL LOGIC ---
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const openProductDetail = (productId: string, brandName = 'Nike') => {
     const productDetail = getProductDetail(productId)
     if (productDetail) {
@@ -283,25 +370,43 @@ export function useProductStore() {
   return {
     // State
     selectedProduct,
-    selectedProductDetail, //  Product Detail
+    selectedProductDetail,
     wishlistItems,
     cartItems,
+    items, // Expose for template access
+    
+    // Computed/Getters
     allProducts,
-    // Wishlist Methods
     wishlistCount,
+    cartCount,
+    subtotal,
+    totalItems,
+    
+    // Product Methods
+    findProductById,
+    getProductDetail,
+    
+    // Wishlist Methods
     isInWishlist,
     toggleWishlist,
     removeFromWishlist,
+    clearWishlist,
+    
     // Cart Methods
     addToCart,
-    cartCount,
+    removeItem,
+    updateQuantity,
+    clearCart,
+    
     // Modal Methods
     openQuickView,
     closeQuickView,
-    // Product Detail
     openProductDetail,
     closeProductDetail,
-    findProductById,
-    getProductDetail,
   }
+})
+
+// For backward compatibility, export a composable version
+export function useCartStore() {
+  return useProductStore()
 }
