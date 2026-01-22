@@ -4,6 +4,7 @@ import { useCartStore } from '@/stores/store'
 import { useProductStore } from '@/stores/store'
 import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+//import { useProductStore } from '@/stores/store'
 
 const router = useRouter()
 const route = useRoute()
@@ -22,14 +23,19 @@ const { toggleWishlist, isInWishlist } = useProductStore() //
 const imageUrl = computed(
   () => new URL(`../assets/images/${props.productImg}`, import.meta.url).href,
 )
-
-const emit = defineEmits<{
-  (e: 'quick-view', id: string): void
-}>()
+const productStore = useProductStore()
 
 const openQuickView = () => {
-  emit('quick-view', props.productId)
+  productStore.openQuickView(props.productId)
 }
+
+// const emit = defineEmits<{
+//   (e: 'quick-view', id: string): void
+// }>()
+
+// const openQuickView = () => {
+//   emit('quick-view', props.productId)
+// }
 const openProductDetail = () => {
   router.push({
     name: 'detail',

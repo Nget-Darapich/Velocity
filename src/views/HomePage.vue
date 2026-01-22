@@ -76,7 +76,7 @@
         :product-img="item.img"
         :product-name="item.name"
         :product-price="item.price"
-        @quick-view="openQuickView"
+
         @view-detail="goToProductDetail(Number(item.id))"
       />
     </div>
@@ -101,21 +101,14 @@
       </router-link>
     </div>
   </div>
-  <QuickViewModal
-    v-if="selectedProduct"
-    :is-open="!!selectedProduct"
-    :product="selectedProduct"
-    @close="closeQuickView"
-    @add-to-cart="handleAddToCartFromQuickView"
-  />
+  <QuickViewModal />
+
 </template>
 <script setup lang="ts">
 import BrandCard from '@/components/home/BrandCard.vue'
 import CategoryCard from '@/components/home/CategoryCard.vue'
 import ProductCard from '@/components/ProductCard.vue'
 import QuickViewModal from '@/components/QuickViewModal.vue'
-import { useCartStore } from '@/stores/store'
-import { useProductStore } from '@/stores/store'
 import { MoveRight } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import { categories, brands, tabs, products, type TabKey } from '@/stores/store'
@@ -127,44 +120,11 @@ const goToProductDetail = (id: number) => {
   router.push(`/product/${id}`)
 }
 
-const cart = useCartStore()
-
-const {
-  selectedProduct,
-  openQuickView,
-  closeQuickView,
-} = useProductStore()
-
 const activeTab = ref<TabKey>('featured')
 
 const currentProducts = computed(() => {
   return products[activeTab.value] || []
 })
 
-interface QuickViewPayload {
-  product: {
-    id: string | number
-    name: string
-    price: string | number
-    img: string
-  }
-  size: string
-  qty: number
-}
 
-const handleAddToCartFromQuickView = ({ product, size, qty }: QuickViewPayload) => {
-  cart.addToCart({
-    // Ensure ID is a number as required by cart.ts
-    id: typeof product.id === 'string' ? parseInt(product.id) : product.id,
-    name: product.name,
-    // Ensure Price is a number (removes '$' if it's a string)
-    price:
-      typeof product.price === 'string'
-        ? parseFloat(product.price.replace('$', ''))
-        : product.price,
-    img: product.img,
-    size,
-    quantity: qty,
-  })
-}
 </script>

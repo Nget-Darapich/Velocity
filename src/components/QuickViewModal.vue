@@ -1,27 +1,32 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <!-- QuickViewModal.vue -->
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { useProductStore } from '@/stores/store'
 
-const props = defineProps<{
-  isOpen: boolean
-  product: {
-    id: string
-    name: string
-    price: string
-    img: string
-    description: string
-    sizes: string[]
-    brand: string
-    category: string
-    madeIn: string
-  } | null
-}>()
+const productStore = useProductStore()
+const product = computed(() => productStore.selectedProduct)
 
-const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'add-to-cart', payload: { product: any; size: string; qty: number }): void
-}>()
+
+// const props = defineProps<{
+//   isOpen: boolean
+//   product: {
+//     id: string
+//     name: string
+//     price: string
+//     img: string
+//     description: string
+//     sizes: string[]
+//     brand: string
+//     category: string
+//     madeIn: string
+//   } | null
+// }>()
+
+// const emit = defineEmits<{
+//   (e: 'close'): void
+//   (e: 'add-to-cart', payload: { product: any; size: string; qty: number }): void
+// }>()
 
 const product = computed(() => props.product)
 
@@ -48,31 +53,99 @@ watch(
   { immediate: true },
 )
 
+// const addToCart = () => {
+//   if (!product.value) return
+//   emit('add-to-cart', {
+//     product: product.value,
+//     size: selectedSize.value,
+//     qty: quantity.value,
+//   })
+//   emit('close')
+// }
 const addToCart = () => {
   if (!product.value) return
-  emit('add-to-cart', {
-    product: product.value,
+
+  productStore.addToCart({
+    id: Number(product.value.id),
+    name: product.value.name,
+    price: Number(product.value.price.replace('$', '')),
+    img: product.value.img,
     size: selectedSize.value,
-    qty: quantity.value,
+    quantity: quantity.value,
   })
-  emit('close')
+
+  productStore.closeQuickView()
+}
+
+</script> -->
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue'
+import { useProductStore } from '@/stores/store'
+
+const productStore = useProductStore()
+
+// ✅ SINGLE source of truth
+const product = computed(() => productStore.selectedProduct)
+
+// load image from assets
+const imageUrl = computed(() => {
+  if (!product.value?.img) return ''
+  try {
+    return new URL(`../assets/images/${product.value.img}`, import.meta.url).href
+  } catch {
+    return ''
+  }
+})
+
+const selectedSize = ref('')
+const quantity = ref(1)
+
+// ✅ watch STORE product
+watch(
+  product,
+  (p) => {
+    if (!p) return
+    selectedSize.value = p.sizes?.[0] ?? ''
+    quantity.value = 1
+  },
+  { immediate: true },
+)
+
+const addToCart = () => {
+  if (!product.value) return
+
+  productStore.addToCart({
+    id: Number(product.value.id),
+    name: product.value.name,
+    price: Number(product.value.price.replace('$', '')),
+    img: product.value.img,
+    size: selectedSize.value,
+    quantity: quantity.value,
+  })
+
+  productStore.closeQuickView()
 }
 </script>
 
 <template>
   <!-- Backdrop -->
   <div
-    v-if="isOpen && product"
+    v-if="product"
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-    @click.self="emit('close')"
+    @click.self="productStore.closeQuickView()"
   >
     <!-- Modal Content -->
     <div
       class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl"
     >
       <!-- Close Button -->
-      <button
+      <!-- <button
         @click="emit('close')"
+        class="absolute top-4 right-4 z-10 text-gray-500 hover:text-gray-800"
+        aria-label="Close"
+      > -->
+      <button
+        @click="productStore.closeQuickView()"
         class="absolute top-4 right-4 z-10 text-gray-500 hover:text-gray-800"
         aria-label="Close"
       >
