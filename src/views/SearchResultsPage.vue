@@ -83,7 +83,8 @@ interface QuickViewPayload {
 
 const handleAddToCartFromQuickView = ({ product, size, qty }: QuickViewPayload) => {
   cart.addToCart({
-    id: typeof product.id === 'string' ? parseInt(product.id) : product.id,
+    //id: typeof product.id === 'string' ? parseInt(product.id) : product.id,
+    id: typeof product.id === 'string' ? product.id : product.id.toString(),
     name: product.name,
     price: typeof product.price === 'string'
       ? parseFloat(product.price.replace('$', ''))

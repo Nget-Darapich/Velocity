@@ -52,7 +52,7 @@ const addToCart = () => {
   if (!product.value) return
 
   productStore.addToCart({
-    id: Number(product.value.id),
+    id: String(product.value.id),
     name: product.value.name,
     price: Number(product.value.price.replace('$', '')),
     img: product.value.img,

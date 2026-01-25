@@ -28,7 +28,8 @@ const handleAddToCart = (productId: string) => {
   const item = productStore.wishlistItems.find(i => i.id === productId)
   if (item) {
     cartStore.addToCart({
-      id: Number(item.id),
+      //id: Number(item.id),
+      id: item.id,
       name: item.name,
       price: parsePrice(item.price),
       img: item.img,
@@ -47,18 +48,19 @@ const goToProducts = () => {
 const moveAllToCart = () => {
   // Create a copy of the items to avoid mutation during iteration
   const itemsToMove = [...productStore.wishlistItems]
-  
+
   itemsToMove.forEach((item) => {
     cartStore.addToCart({
-      id: Number(item.id),
+      //id: Number(item.id),
+      id: item.id,
       name: item.name,
-      price: parsePrice(item.price), 
+      price: parsePrice(item.price),
       img: item.img,
       size: item.size,
       quantity: 1
     })
   })
-  
+
   // Clear the wishlist using the store method
   productStore.clearWishlist()
 }

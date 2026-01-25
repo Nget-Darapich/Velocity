@@ -49,7 +49,7 @@ const addToCart = () => {
   if (!product.value) return
 
   cart.addToCart({
-    id: Number(product.value.id),
+    id: product.value.id,
     name: product.value.name,
     price: parseFloat(product.value.price.replace('$', '')),
     img: product.value.img,
