@@ -113,7 +113,8 @@ onUnmounted(() => window.removeEventListener('keydown', closeOnEscape))
         </div>
       </div>
 
-      <router-link to="/#" class="text-[24px] w-fit">About us</router-link>
+      <router-link to="/about" class="text-[24px] w-fit">About us</router-link>
+
     </div>
 
     <!-- Icons -->
@@ -127,7 +128,7 @@ onUnmounted(() => window.removeEventListener('keydown', closeOnEscape))
       <!-- Wishlist with Badge - Use productStore.wishlistCount directly -->
       <router-link to="/wishlist" class="relative">
         <Heart :size="24" />
-        <span 
+        <span
           v-if="productStore.wishlistCount > 0"
           class="absolute -top-2 -right-2 text-xs px-1.5 py-0.5 rounded-full border bg-[#992020] text-white"
         >

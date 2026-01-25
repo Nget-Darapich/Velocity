@@ -1,47 +1,3 @@
-import { defineStore } from "pinia"
-
-export type OrderStatus = "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED"
-
-export type Order = {
-  id: string
-  createdAt: string
-  status: OrderStatus
-  total: number
-  itemsCount: number
-  email?: string
-}
-
-function generateOrderId() {
-  const last = Number(localStorage.getItem('velocity_last_order_id') || '10000')
-  const next = last + 1
-  localStorage.setItem('velocity_last_order_id', String(next))
-  return `ORD-${next}`
-}
-
-
-export const useOrdersStore = defineStore("orders", {
-  state: () => ({
-    orders: JSON.parse(localStorage.getItem("velocity_orders") || "[]") as Order[],
-  }),
-  actions: {
-    placeOrder(payload: { total: number; itemsCount: number; email?: string }) {
-      const order: Order = {
-        id: generateOrderId(),
-        createdAt: new Date().toISOString(),
-        status: "PROCESSING",
-        total: payload.total,
-        itemsCount: payload.itemsCount,
-        email: payload.email,
-      }
-
-      this.orders.unshift(order)
-      localStorage.setItem("velocity_orders", JSON.stringify(this.orders))
-      return order
-    },
-
-    findOrder(id: string) {
-      return this.orders.find((o) => o.id.toLowerCase() === id.toLowerCase())
-// src/stores/orders.ts
 import { defineStore } from 'pinia'
 
 export type OrderStatus = 'PAID' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
@@ -108,7 +64,7 @@ function pad(n: number) {
 }
 
 function makeOrderId(seq: number) {
-  // VEL-YYYYMMDD-####  (looks real)
+  // VEL-YYYYMMDD-####
   const d = new Date()
   const yyyy = d.getFullYear()
   const mm = pad(d.getMonth() + 1)
@@ -118,7 +74,6 @@ function makeOrderId(seq: number) {
 }
 
 function deriveStatus(createdAtIso: string): OrderStatus {
-  // auto “progress” status by time (realistic demo)
   const created = new Date(createdAtIso).getTime()
   const now = Date.now()
   const hours = (now - created) / (1000 * 60 * 60)
@@ -137,7 +92,6 @@ export const useOrdersStore = defineStore('orders', {
 
   getters: {
     allOrders(state): Order[] {
-      // show newest first + derived status
       return [...state.orders]
         .map((o) => ({ ...o, status: o.status === 'CANCELLED' ? o.status : deriveStatus(o.createdAt) }))
         .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
@@ -178,7 +132,6 @@ export const useOrdersStore = defineStore('orders', {
 
       this.orders.push(order)
       saveOrders(this.orders)
-
       localStorage.setItem('velocity_last_order', id)
 
       return order
@@ -187,7 +140,6 @@ export const useOrdersStore = defineStore('orders', {
     findById(id: string) {
       const found = this.orders.find((o) => o.id === id)
       if (!found) return null
-      // attach derived status for display
       return {
         ...found,
         status: found.status === 'CANCELLED' ? found.status : deriveStatus(found.createdAt),
