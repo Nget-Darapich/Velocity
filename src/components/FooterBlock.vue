@@ -13,6 +13,7 @@
           <div class="footer__social">
             <!-- If you want these to go to real social pages later, replace # with real URLs -->
             <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="footer__icon">
+            <a class="footer__icon clickable" href="#" aria-label="Facebook" @click.prevent>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M14 8.5V7c0-.9.6-1 1-1h1.9V3.1C16.6 3 15.7 3 14.7 3 12.3 3 11 4.4 11 7v1.5H9v3h2V21h3v-9.5h2.3l.7-3H14z"
@@ -20,7 +21,11 @@
               </svg>
             </a>
 
+<<<<<<< HEAD
             <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter" class="footer__icon">
+=======
+            <a class="footer__icon clickable" href="#" aria-label="Twitter" @click.prevent>
+>>>>>>> a175e1d (Add footer pages, routing, and simple order tracking)
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M20.5 7.1c.01.18.01.36.01.55 0 5.63-4.29 12.12-12.12 12.12-2.4 0-4.64-.7-6.52-1.92.34.04.66.05 1.02.05 1.98 0 3.8-.67 5.26-1.81-1.85-.03-3.4-1.25-3.93-2.92.26.04.52.07.8.07.37 0 .74-.05 1.08-.14-1.93-.39-3.39-2.09-3.39-4.13v-.05c.56.31 1.22.51 1.91.53-1.14-.76-1.88-2.06-1.88-3.53 0-.78.2-1.5.58-2.13 2.07 2.54 5.17 4.2 8.66 4.38-.07-.31-.1-.64-.1-.98 0-2.33 1.89-4.22 4.22-4.22 1.21 0 2.31.51 3.08 1.33.96-.19 1.86-.54 2.67-1.02-.31.98-.98 1.8-1.85 2.32.85-.1 1.66-.33 2.41-.66-.58.84-1.29 1.58-2.12 2.17z"
@@ -28,7 +33,11 @@
               </svg>
             </a>
 
+<<<<<<< HEAD
             <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="footer__icon">
+=======
+            <a class="footer__icon clickable" href="#" aria-label="Instagram" @click.prevent>
+>>>>>>> a175e1d (Add footer pages, routing, and simple order tracking)
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M7.5 3h9A4.5 4.5 0 0 1 21 7.5v9A4.5 4.5 0 0 1 16.5 21h-9A4.5 4.5 0 0 1 3 16.5v-9A4.5 4.5 0 0 1 7.5 3zm0 2A2.5 2.5 0 0 0 5 7.5v9A2.5 2.5 0 0 0 7.5 19h9a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 16.5 5h-9z"
@@ -47,6 +56,7 @@
           <h3 class="footer__title">CATEGORY</h3>
           <ul class="footer__list">
             <li>
+<<<<<<< HEAD
               <router-link to="/products/category/athleticFootwear">Athletic Footwear</router-link>
             </li>
             <li>
@@ -57,6 +67,18 @@
             </li>
             <li>
               <router-link to="/products/category/sandalsAndslides">Sandles &amp; Slides</router-link>
+=======
+              <router-link class="link-hover" to="/products/category/athleticFootwear">Athletic Footwear</router-link>
+            </li>
+            <li>
+              <router-link class="link-hover" to="/products/category/luxuryLeatherShoes">Luxury Leather Shoes</router-link>
+            </li>
+            <li>
+              <router-link class="link-hover" to="/products/category/sustainableFootwear">Sustainable Footwear</router-link>
+            </li>
+            <li>
+              <router-link class="link-hover" to="/products/category/sandalsAndslides">Sandles &amp; Slides</router-link>
+>>>>>>> a175e1d (Add footer pages, routing, and simple order tracking)
             </li>
           </ul>
         </div>
@@ -65,10 +87,17 @@
         <div class="footer__col">
           <h3 class="footer__title">ABOUT US</h3>
           <ul class="footer__list">
+<<<<<<< HEAD
             <li><router-link to="/sitemap">Sitemap</router-link></li>
             <li><router-link to="/faq">FAQ</router-link></li>
             <li><router-link to="/about">About Us</router-link></li>
             <li><router-link to="/terms">Terms &amp; Conditions</router-link></li>
+=======
+            <li><router-link class="link-hover" to="/sitemap">Sitemap</router-link></li>
+            <li><router-link class="link-hover" to="/faq">FAQ</router-link></li>
+            <li><router-link class="link-hover" to="/about">About Us</router-link></li>
+            <li><router-link class="link-hover" to="/terms">Terms &amp; Conditions</router-link></li>
+>>>>>>> a175e1d (Add footer pages, routing, and simple order tracking)
           </ul>
         </div>
 
@@ -76,10 +105,17 @@
         <div class="footer__col">
           <h3 class="footer__title">CUSTOMER<br />SERVICES</h3>
           <ul class="footer__list">
+<<<<<<< HEAD
             <li><router-link to="/contact">Contact Us</router-link></li>
             <li><router-link to="/track-order">Track Your Order</router-link></li>
             <li><router-link to="/product-care">Product Care &amp; Repair</router-link></li>
             <li><router-link to="/shipping-returns">Shipping &amp; Returns</router-link></li>
+=======
+            <li><router-link class="link-hover" to="/contact">Contact Us</router-link></li>
+            <li><router-link class="link-hover" to="/track-order">Track Your Order</router-link></li>
+            <li><router-link class="link-hover" to="/product-care">Product Care & Repair</router-link></li>
+            <li><router-link class="link-hover" to="/shipping-returns">Shipping & Returns</router-link></li>
+>>>>>>> a175e1d (Add footer pages, routing, and simple order tracking)
           </ul>
         </div>
       </div>
@@ -144,12 +180,15 @@ const year = new Date().getFullYear()
   justify-content: center;
   border-radius: 999px;
   border: 1px solid #ddd;
+<<<<<<< HEAD
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
 .footer__icon:hover {
   transform: translateY(-2px);
   border-color: #bbb;
+=======
+>>>>>>> a175e1d (Add footer pages, routing, and simple order tracking)
 }
 
 .footer__icon svg {
@@ -173,17 +212,24 @@ const year = new Date().getFullYear()
   gap: 16px;
 }
 
+<<<<<<< HEAD
 /* router-link renders to <a>, so this styles both <a> and <router-link> */
+=======
+/* links */
+>>>>>>> a175e1d (Add footer pages, routing, and simple order tracking)
 .footer__list a {
   text-decoration: none;
   color: #222;
   font-size: 16px;
   line-height: 1.4;
+<<<<<<< HEAD
   transition: opacity 0.15s ease;
 }
 
 .footer__list a:hover {
   opacity: 0.7;
+=======
+>>>>>>> a175e1d (Add footer pages, routing, and simple order tracking)
 }
 
 .footer__divider {

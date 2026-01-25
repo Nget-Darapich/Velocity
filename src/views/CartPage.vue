@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useCartStore } from '@/stores/store'
+import { useOrdersStore } from '@/stores/orders'
 import promoIcon from '@/assets/images/promo-icon.png'
 import { useRouter } from 'vue-router'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 
 const cart = useCartStore()
+const orders = useOrdersStore()
 const router = useRouter()
 
 const promo = ref('CODE123')
@@ -13,10 +15,12 @@ const promo = ref('CODE123')
 // placeholder values (same as screenshot)
 const discount = computed(() => 8)
 const shipping = computed(() => 4)
-const total = computed(() => cart.subtotal - discount.value + shipping.value)
+const subtotal = computed(() => Number(cart.subtotal || 0))
+const total = computed(() => Number((subtotal.value - discount.value + shipping.value).toFixed(2)))
+
+const canCheckout = computed(() => cart.items.length > 0)
 
 const clearCart = () => {
-  // requires cart.clearCart() action in store
   cart.clearCart()
 }
 
@@ -25,7 +29,6 @@ const applyPromo = () => {
 }
 
 const getItemImage = (img: string) => {
-  // Vite-safe way (no import.meta inside template)
   return new URL(`../assets/images/${img}`, import.meta.url).href
 }
 
@@ -34,6 +37,7 @@ const goToProducts = () => {
 }
 
 const goToCheckout = () => {
+  if (!canCheckout.value) return
   router.push('/checkout')
 }
 
@@ -62,6 +66,50 @@ const addToWishlist = (id: number) => {
     alert('Already in wishlist!')
   }
 }
+
+/* -------------------- REALISTIC ORDER FEATURES -------------------- */
+const trackOrder = (id: string) => {
+  router.push({ path: '/track-order', query: { id } })
+}
+
+const reorder = (orderId: string) => {
+  const o = orders.findById(orderId)
+  if (!o) return
+
+  // Re-add each item (use your store actions if available)
+  for (const it of o.items as any[]) {
+    if (typeof (cart as any).addToCart === 'function') {
+      ;(cart as any).addToCart({
+        id: it.id,
+        name: it.name,
+        price: it.price,
+        quantity: it.quantity,
+        size: it.size,
+        img: it.img,
+      })
+    } else {
+      // fallback: push or update quantity based on your cart structure
+      const existing = (cart as any).items.find(
+        (x: any) => x.id === it.id && (x.size ?? '') === (it.size ?? ''),
+      )
+      if (existing) {
+        cart.updateQuantity(it.id, it.size, existing.quantity + it.quantity)
+      } else {
+        ;(cart as any).items.push({
+          id: it.id,
+          name: it.name,
+          price: it.price,
+          quantity: it.quantity,
+          size: it.size,
+          img: it.img,
+        })
+      }
+    }
+  }
+
+  alert('Items added to cart from your previous order!')
+  router.push('/cart')
+}
 </script>
 
 <template>
@@ -85,7 +133,12 @@ const addToWishlist = (id: number) => {
               </p>
             </div>
 
-            <button class="text-[12px] text-white underline" @click="clearCart">
+            <button
+              class="text-[12px] text-white underline"
+              :class="cart.items.length === 0 ? 'opacity-60 cursor-not-allowed' : ''"
+              :disabled="cart.items.length === 0"
+              @click="clearCart"
+            >
               Clear cart
             </button>
           </div>
@@ -120,7 +173,7 @@ const addToWishlist = (id: number) => {
                     <div class="text-right">
                       <p class="text-[10px] text-[#777]">Item Price</p>
                       <p class="text-[12px] mt-1">
-                        <span class="text-[#1AA35B] font-semibold">${{ item.price }}</span>
+                        <span class="text-[#1AA35B] font-semibold">${{ Number(item.price).toFixed(2) }}</span>
                         <span class="text-[#999]"> / $3.00 Tax</span>
                       </p>
                     </div>
@@ -162,7 +215,7 @@ const addToWishlist = (id: number) => {
                       <div class="text-right min-w-[110px]">
                         <p class="text-[10px] text-[#777]">Total:</p>
                         <p class="text-[12px] font-semibold text-[#1AA35B]">
-                          ${{ item.price * item.quantity }}
+                          ${{ (Number(item.price) * Number(item.quantity)).toFixed(2) }}
                         </p>
                       </div>
                     </div>
@@ -173,6 +226,56 @@ const addToWishlist = (id: number) => {
 
             <div v-if="cart.items.length === 0" class="text-sm text-[#333]">
               Your cart is empty.
+            </div>
+          </div>
+
+          <!-- ✅ REALISTIC: RECENT ORDERS (appears after user paid) -->
+          <div
+            class="bg-white rounded-[10px] border border-[#E9E9E9]
+                   shadow-[0_6px_14px_rgba(0,0,0,0.15)] p-6"
+          >
+            <div class="flex items-center justify-between">
+              <p class="text-[14px] font-semibold text-[#222]">Recent Orders</p>
+              <router-link to="/track-order" class="text-[12px] font-semibold underline text-[#222]">
+                Track order
+              </router-link>
+            </div>
+
+            <p v-if="orders.allOrders.length === 0" class="mt-3 text-[12px] text-[#666]">
+              No orders yet. After you pay on Checkout, your order history will appear here.
+            </p>
+
+            <div v-else class="mt-4 space-y-3">
+              <div
+                v-for="o in orders.recentOrders"
+                :key="o.id"
+                class="flex items-center justify-between border border-[#eee] rounded-lg px-4 py-3"
+              >
+                <div>
+                  <p class="text-[12px] font-semibold text-[#222]">{{ o.id }}</p>
+                  <p class="text-[11px] text-[#666]">
+                    {{ new Date(o.createdAt).toLocaleString() }} • {{ o.itemsCount }} items •
+                    ${{ o.totals.total.toFixed(2) }}
+                  </p>
+                  <p class="text-[11px] font-semibold mt-1">Status: {{ o.status }}</p>
+                </div>
+
+                <div class="flex gap-2">
+                  <button
+                    class="h-9 px-4 rounded-md bg-[#111] text-white text-[11px] font-semibold"
+                    @click="trackOrder(o.id)"
+                  >
+                    Track
+                  </button>
+
+                  <button
+                    class="h-9 px-4 rounded-md bg-[#FF8000] text-white text-[11px] font-semibold"
+                    @click="reorder(o.id)"
+                  >
+                    Reorder
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -216,33 +319,45 @@ const addToWishlist = (id: number) => {
             <div class="px-6 py-6 space-y-4">
               <div class="flex justify-between text-[12px]">
                 <span>Subtotal</span>
-                <span>${{ cart.subtotal }}</span>
+                <span>${{ subtotal.toFixed(2) }}</span>
               </div>
 
               <div class="flex justify-between text-[12px]">
                 <span>Discount</span>
-                <span>${{ discount }}</span>
+                <span>${{ Number(discount).toFixed(2) }}</span>
               </div>
 
               <div class="flex justify-between text-[12px]">
                 <span>Shipping</span>
-                <span>${{ shipping }}</span>
+                <span>${{ Number(shipping).toFixed(2) }}</span>
               </div>
 
               <div class="flex justify-between text-[12px] font-semibold">
                 <span>Total</span>
-                <span>${{ total }}</span>
+                <span>${{ total.toFixed(2) }}</span>
               </div>
 
               <!-- CHECKOUT BAR -->
-              <div class="mt-6 bg-[#4BE3C3] rounded-[10px] px-6 py-4 flex justify-between items-center">
-                <span class="font-semibold">${{ total }}</span>
+              <div
+                class="mt-6 rounded-[10px] px-6 py-4 flex justify-between items-center"
+                :class="canCheckout ? 'bg-[#4BE3C3]' : 'bg-[#CFEFE8] opacity-70'"
+              >
+                <span class="font-semibold">${{ total.toFixed(2) }}</span>
 
-                <button class="flex items-center gap-2 font-semibold" @click="goToCheckout">
+                <button
+                  class="flex items-center gap-2 font-semibold"
+                  :class="!canCheckout ? 'cursor-not-allowed' : ''"
+                  :disabled="!canCheckout"
+                  @click="goToCheckout"
+                >
                   Checkout
                   <span class="w-7 h-7 rounded-full bg-[#FFB000] flex items-center justify-center">›</span>
                 </button>
               </div>
+
+              <p v-if="!canCheckout" class="text-[11px] text-[#666]">
+                Add products to your cart before checking out.
+              </p>
 
               <button class="mt-4 bg-[#FFB000] text-white px-5 py-2 rounded-lg" @click="goToProducts">
                 Continue Shopping

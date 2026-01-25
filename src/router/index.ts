@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useCartStore } from '@/stores/store'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,6 +13,14 @@ const router = createRouter({
         { path: 'cart', name: 'Cart', component: () => import('@/views/CartPage.vue') },
         { path: 'checkout', name: 'Checkout', component: () => import('@/views/CheckoutPage.vue') },
 
+        {path: 'checkout',
+        name: 'Checkout',
+        component: () => import('@/views/CheckoutPage.vue'),
+        beforeEnter: () => {
+          const cart = useCartStore()
+          if (!cart.items.length) return { name: 'Cart' } // redirect if empty
+          },
+        },
         { path: 'wishlist', name: 'wishlist', component: () => import('@/views/WishlistPage.vue') },
 
         { path: 'product/:id', name: 'detail', component: () => import('@/views/ProductDetailPage.vue') },
