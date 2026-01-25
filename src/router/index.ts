@@ -10,15 +10,24 @@ const router = createRouter({
         { path: '', name: 'home', component: () => import('@/views/HomePage.vue') },
         { path: 'cart', name: 'Cart', component: () => import('@/views/CartPage.vue') },
         { path: 'checkout', name: 'Checkout', component: () => import('@/views/CheckoutPage.vue') },
+
+        { path: 'wishlist', name: 'wishlist', component: () => import('@/views/WishlistPage.vue') },
+
+        { path: 'product/:id', name: 'detail', component: () => import('@/views/ProductDetailPage.vue') },
+
+        // PAGES (Footer links)
+        { path: 'about', name: 'about', component: () => import('@/views/AboutPage.vue') },
+        { path: 'faq', name: 'faq', component: () => import('@/views/FaqPage.vue') },
+        { path: 'sitemap', name: 'sitemap', component: () => import('@/views/SitemapPage.vue') },
+        { path: 'terms', name: 'terms', component: () => import('@/views/TermsPage.vue') },
+
+        { path: 'contact', name: 'contact', component: () => import('@/views/ContactPage.vue') },
+        { path: 'track-order', name: 'trackOrder', component: () => import('@/views/TrackOrderPage.vue') },
+        { path: 'product-care', name: 'productCare', component: () => import('@/views/ProductCarePage.vue') },
         {
-          path: 'wishlist',
-          name: 'wishlist',
-          component: () => import('@/views/WishlistPage.vue'),
-        },
-        {
-          path: 'product/:id',
-          name: 'detail',
-          component: () => import('@/views/ProductDetailPage.vue'),
+          path: 'shipping-returns',
+          name: 'shippingReturns',
+          component: () => import('@/views/ShippingReturnsPage.vue'),
         },
 
         {
@@ -32,26 +41,25 @@ const router = createRouter({
               component: () => import('@/views/ProductPage.vue'),
             },
 
-            // Single dynamic brand route instead of 3 separate routes
+            // brand route
             {
               path: ':brand',
               name: 'brand',
               component: () => import('@/views/BrandPage.vue'),
-              // Optional: Add validation to ensure brand exists
               beforeEnter: (to) => {
                 const validBrands = ['nike', 'vans', 'adidas']
                 const brand = to.params.brand as string
                 if (!validBrands.includes(brand.toLowerCase())) {
-                  return { name: 'products' } // Redirect to products page if invalid brand
+                  return { name: 'products' }
                 }
               },
             },
-            // Single dynamic category route instead of 4 separate routes
+
+            // category route
             {
               path: 'category/:category',
               name: 'category',
               component: () => import('@/views/CategoryPage.vue'),
-              // Optional: Add validation to ensure category exists
               beforeEnter: (to) => {
                 const validCategories = [
                   'athleticFootwear',
@@ -78,20 +86,21 @@ const router = createRouter({
         { path: 'signup', name: 'signup', component: () => import('@/views/SignupPage.vue') },
       ],
     },
+
     // Admin side
-  {
-    path: "/admin",
-    component: () => import("@/layouts/AdminLayout.vue"),
-    children: [
-      { path: "", component: () => import("@/views/admin/AdminDashboard.vue") },
-      { path: "products", component: () => import("@/views/admin/AdminProducts.vue") },
-      { path: "inventory", component: () => import("@/views/admin/AdminInventory.vue") },
-      { path: "category", component: () => import("@/views/admin/AdminProducts.vue") },
-      { path: "orders", component: () => import("@/views/admin/AdminOrders.vue") },
-      { path: "purchases", component: () => import("@/views/admin/AdminPurchases.vue") },
-      { path: "invoices", component: () => import("@/views/admin/AdminInvoices.vue") },
-    ],
-  },
+    {
+      path: '/admin',
+      component: () => import('@/layouts/AdminLayout.vue'),
+      children: [
+        { path: '', component: () => import('@/views/admin/AdminDashboard.vue') },
+        { path: 'products', component: () => import('@/views/admin/AdminProducts.vue') },
+        { path: 'inventory', component: () => import('@/views/admin/AdminInventory.vue') },
+        { path: 'category', component: () => import('@/views/admin/AdminProducts.vue') },
+        { path: 'orders', component: () => import('@/views/admin/AdminOrders.vue') },
+        { path: 'purchases', component: () => import('@/views/admin/AdminPurchases.vue') },
+        { path: 'invoices', component: () => import('@/views/admin/AdminInvoices.vue') },
+      ],
+    },
   ],
 })
 
