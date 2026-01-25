@@ -7,6 +7,11 @@ export interface Product {
   name: string
   price: string
   img: string
+  isNew?: boolean
+  isDiscounted?: boolean
+  madeIn?: string
+  sizeRange?: string
+  brand?: string
 }
 
 export interface ProductDetail extends Product {
@@ -40,59 +45,67 @@ export type CategoryKey =
   | 'sandalsAndslides'
 export type BrandKey = 'nike' | 'vans' | 'adidas'
 
-// --- PRODUCT DATA ---
+// Filter types
+export interface FilterOptions {
+  newArrivalsOrDiscount: 'new' | 'discount' | null
+  priceRange: string
+  madeIn: string
+  sizeRange: string
+}
+
+// --- PRODUCT DATA WITH FILTER ATTRIBUTES ---
 export const products: Record<TabKey, Product[]> = {
   featured: [
-    { id: '1', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: '2', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: '3', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: '4', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
-    { id: '5', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '1', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'US', sizeRange: '40-46', brand: 'Nike' },
+    { id: '2', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png', madeIn: 'UK', sizeRange: '35-39', brand: 'Adidas' },
+    { id: '3', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png', madeIn: 'CN', sizeRange: '40-46', brand: 'Nike', isNew: true },
+    { id: '4', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png', madeIn: 'US', sizeRange: '35-39', brand: 'Vans', isDiscounted: true },
+    { id: '5', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'UK', sizeRange: '15-27', brand: 'Adidas' },
   ],
   newArrivals: [
-    { id: '6', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: '7', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: '8', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
-    { id: '9', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: '10', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '6', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png', madeIn: 'CN', sizeRange: '28-34', brand: 'Nike', isNew: true },
+    { id: '7', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'US', sizeRange: '40-46', brand: 'Vans', isNew: true },
+    { id: '8', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png', madeIn: 'UK', sizeRange: '35-39', brand: 'Nike', isNew: true },
+    { id: '9', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png', madeIn: 'CN', sizeRange: '40-46', brand: 'Adidas', isNew: true },
+    { id: '10', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'US', sizeRange: '15-27', brand: 'Nike', isNew: true },
   ],
   bestSeller: [
-    { id: '11', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: '12', name: 'Waterproof White Sneaker', price: '$25.00', img: 'waterproof.png' },
-    { id: '13', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: '14', name: 'Light Weight Running Shoes', price: '$25.00', img: 'running.png' },
-    { id: '15', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '11', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png', madeIn: 'UK', sizeRange: '35-39', brand: 'Adidas', isDiscounted: true },
+    { id: '12', name: 'Waterproof White Sneaker', price: '$25.00', img: 'waterproof.png', madeIn: 'CN', sizeRange: '40-46', brand: 'Vans', isDiscounted: true },
+    { id: '13', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'US', sizeRange: '28-34', brand: 'Nike' },
+    { id: '14', name: 'Light Weight Running Shoes', price: '$25.00', img: 'running.png', madeIn: 'UK', sizeRange: '40-46', brand: 'Adidas' },
+    { id: '15', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'CN', sizeRange: '35-39', brand: 'Vans', isDiscounted: true },
   ],
 }
 
 export const productsByCategory: Record<CategoryKey, Product[]> = {
   athleticFootwear: [
-    { id: '16', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: '17', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: '18', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: '19', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
-    { id: '20', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '16', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'US', sizeRange: '40-46', brand: 'Nike' },
+    { id: '17', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png', madeIn: 'UK', sizeRange: '35-39', brand: 'Adidas', isNew: true },
+    { id: '18', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png', madeIn: 'CN', sizeRange: '40-46', brand: 'Nike' },
+    { id: '19', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png', madeIn: 'US', sizeRange: '28-34', brand: 'Vans', isDiscounted: true },
+    { id: '20', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'UK', sizeRange: '15-27', brand: 'Adidas' },
   ],
   luxuryLeatherShoes: [
-    { id: '21', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: '22', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: '23', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
-    { id: '24', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: '25', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '21', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png', madeIn: 'CN', sizeRange: '35-39', brand: 'Nike', isNew: true },
+    { id: '22', name: 'Premium Leather Chelsea Boots', price: '$650.00', img: 'chelsea.png', madeIn: 'US', sizeRange: '40-46', brand: 'Vans' },
+    { id: '23', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png', madeIn: 'UK', sizeRange: '40-46', brand: 'Nike', isDiscounted: true },
+    { id: '24', name: 'Classic White Tennis Sneakers', price: '$750.00', img: 'tennis.png', madeIn: 'CN', sizeRange: '35-39', brand: 'Adidas' },
+    { id: '25', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'US', sizeRange: '28-34', brand: 'Nike' },
   ],
   sustainableFootwear: [
-    { id: '26', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: '27', name: 'Waterproof White Sneaker', price: '$25.00', img: 'waterproof.png' },
-    { id: '28', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: '29', name: 'Light Weight Running Shoes', price: '$25.00', img: 'running.png' },
-    { id: '30', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '26', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png', madeIn: 'UK', sizeRange: '40-46', brand: 'Adidas', isNew: true },
+    { id: '27', name: 'Waterproof White Sneaker', price: '$850.00', img: 'waterproof.png', madeIn: 'CN', sizeRange: '35-39', brand: 'Vans', isDiscounted: true },
+    { id: '28', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'US', sizeRange: '15-27', brand: 'Nike' },
+    { id: '29', name: 'Light Weight Running Shoes', price: '$25.00', img: 'running.png', madeIn: 'UK', sizeRange: '40-46', brand: 'Adidas' },
+    { id: '30', name: 'Premium Leather Chelsea Boots', price: '$950.00', img: 'chelsea.png', madeIn: 'CN', sizeRange: '28-34', brand: 'Vans', isNew: true },
   ],
   sandalsAndslides: [
-    { id: '31', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
-    { id: '32', name: 'Classic White Tennis Sneakers', price: '$25.00', img: 'tennis.png' },
-    { id: '33', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png' },
-    { id: '34', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png' },
-    { id: '35', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png' },
+    { id: '31', name: 'Premium Leather Chelsea Boots', price: '$25.00', img: 'chelsea.png', madeIn: 'US', sizeRange: '35-39', brand: 'Nike', isDiscounted: true },
+    { id: '32', name: 'Classic White Tennis Sneakers', price: '$150.00', img: 'tennis.png', madeIn: 'UK', sizeRange: '40-46', brand: 'Adidas' },
+    { id: '33', name: 'Light Weight Running Shoes', price: '$21.00', img: 'running.png', madeIn: 'CN', sizeRange: '40-46', brand: 'Nike' },
+    { id: '34', name: 'Waterproof White Sneaker', price: '$21.00', img: 'waterproof.png', madeIn: 'US', sizeRange: '35-39', brand: 'Vans', isNew: true },
+    { id: '35', name: 'Premium Leather Chelsea Boots', price: '$250.00', img: 'chelsea.png', madeIn: 'UK', sizeRange: '15-27', brand: 'Adidas', isDiscounted: true },
   ],
 }
 
@@ -100,20 +113,35 @@ export const productsByBrand: Record<BrandKey, Product[]> = {
   nike: Array.from({ length: 10 }, (_, i) => ({
     id: `nike-${i + 1}`,
     name: 'Classic White Tennis Sneakers',
-    price: '$25.00',
+    price: i % 2 === 0 ? '$25.00' : '$150.00',
     img: 'tennis.png',
+    madeIn: ['US', 'UK', 'CN'][i % 3],
+    sizeRange: ['15-27', '28-34', '35-39', '40-46'][i % 4],
+    brand: 'Nike',
+    isNew: i % 3 === 0,
+    isDiscounted: i % 4 === 0,
   })),
   vans: Array.from({ length: 10 }, (_, i) => ({
     id: `vans-${i + 1}`,
     name: 'Premium Leather Chelsea Boots',
-    price: '$25.00',
+    price: i % 2 === 0 ? '$25.00' : '$550.00',
     img: 'chelsea.png',
+    madeIn: ['US', 'UK', 'CN'][i % 3],
+    sizeRange: ['15-27', '28-34', '35-39', '40-46'][i % 4],
+    brand: 'Vans',
+    isNew: i % 3 === 1,
+    isDiscounted: i % 4 === 1,
   })),
   adidas: Array.from({ length: 10 }, (_, i) => ({
     id: `adidas-${i + 1}`,
     name: 'Waterproof White Sneaker',
-    price: '$25.00',
+    price: i % 2 === 0 ? '$25.00' : '$350.00',
     img: 'waterproof.png',
+    madeIn: ['US', 'UK', 'CN'][i % 3],
+    sizeRange: ['15-27', '28-34', '35-39', '40-46'][i % 4],
+    brand: 'Adidas',
+    isNew: i % 3 === 2,
+    isDiscounted: i % 4 === 2,
   })),
 }
 
@@ -184,6 +212,12 @@ export const useProductStore = defineStore('product', () => {
   const selectedProductDetail = ref<ProductDetail | null>(null)
   const wishlistItems = ref<WishlistItem[]>(loadWishlist())
   const cartItems = ref<CartItem[]>(loadCart())
+  const currentFilters = ref<FilterOptions>({
+    newArrivalsOrDiscount: null,
+    priceRange: 'all',
+    madeIn: 'all',
+    sizeRange: 'all'
+  })
 
   // --- COMPUTED / GETTERS ---
   const allProducts = computed(() => {
@@ -212,7 +246,6 @@ export const useProductStore = defineStore('product', () => {
     cartItems.value.reduce((sum, item) => sum + item.quantity, 0)
   )
 
-  // Expose items as a computed property for template access
   const items = computed(() => cartItems.value)
 
   // --- PRODUCT METHODS ---
@@ -225,13 +258,9 @@ export const useProductStore = defineStore('product', () => {
     if (!product) return undefined
 
     let category = 'Athletic Footwear'
-    let brand = 'Nike'
+    const brand = product.brand || 'Nike'
     const description = 'Classic sneakers with premium materials and comfort.'
-    const madeIn = 'United States'
-
-    if (product.id.includes('nike')) brand = 'Nike'
-    if (product.id.includes('vans')) brand = 'Vans'
-    if (product.id.includes('adidas')) brand = 'Adidas'
+    const madeIn = product.madeIn || 'United States'
 
     if (productsByCategory.athleticFootwear.some((p) => p.id === id)) {
       category = 'Athletic Footwear'
@@ -251,6 +280,45 @@ export const useProductStore = defineStore('product', () => {
       category,
       madeIn,
     }
+  }
+
+  // Filter products method
+  const getFilteredProducts = (filters: FilterOptions): Product[] => {
+    return allProducts.value.filter((product) => {
+      // Filter by new arrivals or discount
+      if (filters.newArrivalsOrDiscount === 'new' && !product.isNew) return false
+      if (filters.newArrivalsOrDiscount === 'discount' && !product.isDiscounted) return false
+
+      // Filter by price range
+      if (filters.priceRange !== 'all') {
+        const price = parseFloat(product.price.replace('$', ''))
+        if (filters.priceRange === '100-500' && (price < 100 || price > 500)) return false
+        if (filters.priceRange === '500-1000' && (price < 500 || price > 1000)) return false
+      }
+
+      // Filter by made in
+      if (filters.madeIn !== 'all' && product.madeIn !== filters.madeIn) return false
+
+      // Filter by size range
+      if (filters.sizeRange !== 'all' && product.sizeRange !== filters.sizeRange) return false
+
+      return true
+    })
+  }
+
+  // Search products method
+  const searchProducts = (query: string): Product[] => {
+    if (!query.trim()) return []
+    const q = query.toLowerCase()
+    return allProducts.value.filter(p => 
+      p.name.toLowerCase().includes(q) ||
+      p.brand?.toLowerCase().includes(q)
+    )
+  }
+
+  // Set filters
+  const setFilters = (filters: FilterOptions) => {
+    currentFilters.value = filters
   }
 
   // --- WISHLIST ACTIONS ---
@@ -344,9 +412,9 @@ export const useProductStore = defineStore('product', () => {
         ...product,
         description: 'Classic sneakers, clean, comfortable, perfect for any outfit.',
         sizes: ['S', 'M', 'L', 'XL'],
-        brand: brandName,
+        brand: product.brand || brandName,
         category: 'Athletic Footwear',
-        madeIn: 'United States',
+        madeIn: product.madeIn || 'United States',
       }
     }
   }
@@ -373,7 +441,8 @@ export const useProductStore = defineStore('product', () => {
     selectedProductDetail,
     wishlistItems,
     cartItems,
-    items, // Expose for template access
+    items,
+    currentFilters,
     
     // Computed/Getters
     allProducts,
@@ -385,6 +454,9 @@ export const useProductStore = defineStore('product', () => {
     // Product Methods
     findProductById,
     getProductDetail,
+    getFilteredProducts,
+    searchProducts,
+    setFilters,
     
     // Wishlist Methods
     isInWishlist,

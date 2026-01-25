@@ -30,47 +30,11 @@ const breadcrumbMap: Record<string, string> = {
   Checkout: 'Checkout',
   login: 'Login',
   signup: 'Sign Up',
-  detail: 'Product Detail'
+  detail: 'Product Detail',
+  filteredProducts: 'Filtered Products',
+  searchResults: 'Search Results'
 }
 
-// const breadcrumbs = computed(() => {
-//   const crumbs = [{ name: 'Home', path: '/' }]
-
-//   const routeName = route.name?.toString() || ''
-
-//   // If we are on the Home page, don't add anything else
-//   if (routeName === 'home') return crumbs
-
-//   // 1. Handle Dynamic Brand Path (Home > Nike)
-//   if (routeName === 'brand' && route.params.brand) {
-//     crumbs.push({
-//       name: route.params.brand.toString().toUpperCase(),
-//       path: route.path
-//     })
-//   }
-
-//   // 2. Handle Dynamic Category Path (Home > Athletic Footwear)
-//   else if (routeName === 'category' && route.params.category) {
-//     const catName = route.params.category.toString()
-//       .replace(/([A-Z])/g, ' $1') // Adds spaces to camelCase
-//       .trim()
-
-//     crumbs.push({
-//       name: catName.charAt(0).toUpperCase() + catName.slice(1),
-//       path: route.path
-//     })
-//   }
-//   // 3. Static routes - FIXED HERE
-//   else if (routeName in breadcrumbMap) {
-//     crumbs.push({
-//       // Use fallback || '' to ensure the type is always 'string'
-//       name: breadcrumbMap[routeName] || routeName,
-//       path: route.path
-//     })
-//   }
-
-//   return crumbs
-// })
 const breadcrumbs = computed(() => {
   const crumbs = [{ name: 'Home', path: '/' }]
 
@@ -80,10 +44,62 @@ const breadcrumbs = computed(() => {
   // If we are on the Home page, stop here
   if (routeName === 'home') return crumbs
 
+  // FILTERED PRODUCTS PAGE
+  if (routeName === 'filteredProducts') {
+    crumbs.push({
+      name: 'Products',
+      path: '/products',
+    })
+    crumbs.push({
+      name: 'Filtered Products',
+      path: route.path,
+    })
+    return crumbs
+  }
+
+  // SEARCH RESULTS PAGE
+  if (routeName === 'searchResults') {
+    crumbs.push({
+      name: 'Search Results',
+      path: route.path,
+    })
+    return crumbs
+  }
+
   // PRODUCT DETAIL (SPECIAL CASE)
   if (routeName === 'detail') {
     // Home > Product Detail
     if (from === 'home' || !from) {
+      crumbs.push({
+        name: 'Product Detail',
+        path: route.path,
+      })
+      return crumbs
+    }
+
+    // Search > Product Detail
+    if (from === 'search') {
+      crumbs.push({
+        name: 'Search Results',
+        path: '/products/search'
+      })
+      crumbs.push({
+        name: 'Product Detail',
+        path: route.path,
+      })
+      return crumbs
+    }
+
+    // Filtered Products > Product Detail
+    if (from === 'filteredProducts') {
+      crumbs.push({
+        name: 'Products',
+        path: '/products',
+      })
+      crumbs.push({
+        name: 'Filtered Products',
+        path: '/products/filtered'
+      })
       crumbs.push({
         name: 'Product Detail',
         path: route.path,
@@ -170,7 +186,6 @@ const breadcrumbs = computed(() => {
     })
     return crumbs
   }
-
 
   // STATIC ROUTES
   if (routeName in breadcrumbMap) {

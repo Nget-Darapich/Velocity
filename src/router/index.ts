@@ -41,6 +41,20 @@ const router = createRouter({
               component: () => import('@/views/ProductPage.vue'),
             },
 
+            // filtered products route
+            {
+              path: 'filtered',
+              name: 'filteredProducts',
+              component: () => import('@/views/FilteredProductsPage.vue'),
+            },
+
+            // search results route
+            {
+              path: 'search',
+              name: 'searchResults',
+              component: () => import('@/views/SearchResultsPage.vue'),
+            },
+
             // brand route
             {
               path: ':brand',

@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useProductStore } from '@/stores/store'
+
+const router = useRouter()
+const productStore = useProductStore()
 
 const priceOptions = [
   { id: 'all', label: 'All' },
@@ -29,7 +34,7 @@ type SizeOption = (typeof sizeOptions)[number]['id']
 const newArrivalsOrDiscount = ref<'new' | 'discount' | null>(null)
 const priceRange = ref<PriceOption>('all')
 const madeIn = ref<MadeInOption>('all')
-const sizeRange = ref<SizeOption | null>('all')
+const sizeRange = ref<SizeOption>('all')
 
 const resetFilters = () => {
   newArrivalsOrDiscount.value = null
@@ -41,6 +46,19 @@ const resetFilters = () => {
 const toggleNewOrDiscount = (choice: 'new' | 'discount') => {
   newArrivalsOrDiscount.value = newArrivalsOrDiscount.value === choice ? null : choice
 }
+
+const applyFilters = () => {
+  // Set filters in store
+  productStore.setFilters({
+    newArrivalsOrDiscount: newArrivalsOrDiscount.value,
+    priceRange: priceRange.value,
+    madeIn: madeIn.value,
+    sizeRange: sizeRange.value
+  })
+  
+  // Navigate to filtered products page
+  router.push({ name: 'filteredProducts' })
+}
 </script>
 
 <template>
@@ -48,7 +66,12 @@ const toggleNewOrDiscount = (choice: 'new' | 'discount') => {
     class="h-[882px] w-[280px] border rounded-[25px] flex flex-col font-medium text-[18px] bg-white p-3"
   >
     <div class="flex justify-between items-center pt-0">
-      <button class="text-gray-800 hover:text-blue-800 hover:font-semibold">Filters</button>
+      <button 
+        @click="applyFilters"
+        class="text-gray-800 hover:text-blue-800 hover:font-semibold cursor-pointer"
+      >
+        Filters
+      </button>
       <button @click="resetFilters" class="text-[#992020]">Reset</button>
     </div>
 
