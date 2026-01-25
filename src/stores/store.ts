@@ -29,7 +29,7 @@ export interface WishlistItem extends Product {
 }
 
 export interface CartItem {
-  id: number
+  id: string
   name: string
   price: number
   quantity: number
@@ -233,16 +233,16 @@ export const useProductStore = defineStore('product', () => {
   })
 
   const wishlistCount = computed(() => wishlistItems.value.length)
-  
-  const cartCount = computed(() => 
+
+  const cartCount = computed(() =>
     cartItems.value.reduce((sum, item) => sum + item.quantity, 0)
   )
-  
-  const subtotal = computed(() => 
+
+  const subtotal = computed(() =>
     cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
   )
-  
-  const totalItems = computed(() => 
+
+  const totalItems = computed(() =>
     cartItems.value.reduce((sum, item) => sum + item.quantity, 0)
   )
 
@@ -310,7 +310,7 @@ export const useProductStore = defineStore('product', () => {
   const searchProducts = (query: string): Product[] => {
     if (!query.trim()) return []
     const q = query.toLowerCase()
-    return allProducts.value.filter(p => 
+    return allProducts.value.filter(p =>
       p.name.toLowerCase().includes(q) ||
       p.brand?.toLowerCase().includes(q)
     )
@@ -355,8 +355,8 @@ export const useProductStore = defineStore('product', () => {
   }
 
   // --- CART ACTIONS ---
-  const addToCart = (payload: {
-    id: number
+    const addToCart = (payload: {
+    id: string
     name: string
     price: number
     img: string
@@ -385,14 +385,14 @@ export const useProductStore = defineStore('product', () => {
     saveCart(cartItems.value)
   }
 
-  const removeItem = (id: number, size?: string) => {
+  const removeItem = (id: string, size?: string) => {
     cartItems.value = cartItems.value.filter(
       (item) => !(item.id === id && (item.size ?? '') === (size ?? ''))
     )
     saveCart(cartItems.value)
   }
 
-  const updateQuantity = (id: number, size: string | undefined, qty: number) => {
+  const updateQuantity = (id: string, size: string | undefined, qty: number) => {
     const item = cartItems.value.find((i) => i.id === id && (i.size ?? '') === (size ?? ''))
     if (!item) return
     item.quantity = Math.max(1, qty)
@@ -443,33 +443,33 @@ export const useProductStore = defineStore('product', () => {
     cartItems,
     items,
     currentFilters,
-    
+
     // Computed/Getters
     allProducts,
     wishlistCount,
     cartCount,
     subtotal,
     totalItems,
-    
+
     // Product Methods
     findProductById,
     getProductDetail,
     getFilteredProducts,
     searchProducts,
     setFilters,
-    
+
     // Wishlist Methods
     isInWishlist,
     toggleWishlist,
     removeFromWishlist,
     clearWishlist,
-    
+
     // Cart Methods
     addToCart,
     removeItem,
     updateQuantity,
     clearCart,
-    
+
     // Modal Methods
     openQuickView,
     closeQuickView,
