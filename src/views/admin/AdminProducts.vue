@@ -32,35 +32,13 @@
 </template>
 
 <script setup lang="ts">
-import ProductCard from "@/components/admin/ProductCard.vue";
+import { computed } from 'vue'
+import { useProductStore } from '@/stores/store'
+import ProductCard from '@/components/admin/ProductCard.vue'
 
-const products = [
-  {
-    id: 1,
-    name: "Nike Running Shoes",
-    image: "https://pngimg.com/uploads/running_shoes/running_shoes_PNG5823.png",
-    price: 260,
-    oldPrice: 360,
-    rating: 5,
-    reviews: 65
-  },
-  {
-    id: 2,
-    name: "Nike Running Shoes",
-    image: "https://pngimg.com/uploads/running_shoes/running_shoes_PNG5817.png",
-    price: 260,
-    oldPrice: 360,
-    rating: 5,
-    reviews: 65
-  },
-  {
-    id: 3,
-    name: "Nike Running Shoes",
-    image: "https://pngimg.com/uploads/running_shoes/running_shoes_PNG5821.png",
-    price: 260,
-    oldPrice: 360,
-    rating: 5,
-    reviews: 65
-  }
-];
+const productStore = useProductStore()
+
+//Use products from Pinia
+const products = computed(() => productStore.allProducts)
+
 </script>

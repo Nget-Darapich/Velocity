@@ -72,11 +72,7 @@
       <ProductCard
         v-for="item in currentProducts"
         :key="item.id"
-        :product-id="String(item.id)"
-        :product-img="item.img"
-        :product-name="item.name"
-        :product-price="item.price"
-
+        :product="item"
         @view-detail="goToProductDetail(Number(item.id))"
       />
     </div>
@@ -102,7 +98,6 @@
     </div>
   </div>
   <QuickViewModal />
-
 </template>
 <script setup lang="ts">
 import BrandCard from '@/components/home/BrandCard.vue'
@@ -125,6 +120,4 @@ const activeTab = ref<TabKey>('featured')
 const currentProducts = computed(() => {
   return products[activeTab.value] || []
 })
-
-
 </script>

@@ -24,7 +24,7 @@ export interface WishlistItem extends Product {
 }
 
 export interface CartItem {
-  id: number
+  id: string
   name: string
   price: number
   quantity: number
@@ -186,29 +186,46 @@ export const useProductStore = defineStore('product', () => {
   const cartItems = ref<CartItem[]>(loadCart())
 
   // --- COMPUTED / GETTERS ---
+  // const allProducts = computed(() => {
+  //   return [
+  //     ...products.featured,
+  //     ...products.newArrivals,
+  //     ...products.bestSeller,
+  //     ...productsByBrand.nike,
+  //     ...productsByBrand.vans,
+  //     ...productsByBrand.adidas,
+  //     ...Object.values(productsByCategory).flat(),
+  //   ]
+  // })
   const allProducts = computed(() => {
-    return [
-      ...products.featured,
-      ...products.newArrivals,
-      ...products.bestSeller,
-      ...productsByBrand.nike,
-      ...productsByBrand.vans,
-      ...productsByBrand.adidas,
-      ...Object.values(productsByCategory).flat(),
-    ]
-  })
+  const map = new Map<string, Product>()
+
+  const sources = [
+    ...products.featured,
+    ...products.newArrivals,
+    ...products.bestSeller,
+    ...productsByBrand.nike,
+    ...productsByBrand.vans,
+    ...productsByBrand.adidas,
+    ...Object.values(productsByCategory).flat(),
+  ]
+
+  sources.forEach((p) => map.set(p.id, p))
+
+  return Array.from(map.values())
+})
 
   const wishlistCount = computed(() => wishlistItems.value.length)
-  
-  const cartCount = computed(() => 
+
+  const cartCount = computed(() =>
     cartItems.value.reduce((sum, item) => sum + item.quantity, 0)
   )
-  
-  const subtotal = computed(() => 
+
+  const subtotal = computed(() =>
     cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
   )
-  
-  const totalItems = computed(() => 
+
+  const totalItems = computed(() =>
     cartItems.value.reduce((sum, item) => sum + item.quantity, 0)
   )
 
@@ -288,7 +305,7 @@ export const useProductStore = defineStore('product', () => {
 
   // --- CART ACTIONS ---
   const addToCart = (payload: {
-    id: number
+    id: string
     name: string
     price: number
     img: string
@@ -317,19 +334,37 @@ export const useProductStore = defineStore('product', () => {
     saveCart(cartItems.value)
   }
 
-  const removeItem = (id: number, size?: string) => {
-    cartItems.value = cartItems.value.filter(
-      (item) => !(item.id === id && (item.size ?? '') === (size ?? ''))
-    )
-    saveCart(cartItems.value)
+  // const removeItem = (id: number, size?: string) => {
+  //   cartItems.value = cartItems.value.filter(
+  //     (item) => !(item.id === id && (item.size ?? '') === (size ?? ''))
+  //   )
+  //   saveCart(cartItems.value)
+  // }
+  const removeItem = (id: string, size?: string) => {
+  cartItems.value = cartItems.value.filter(
+    (item) => !(item.id === id && (item.size ?? '') === (size ?? ''))
+  )
+
+  saveCart(cartItems.value)
   }
 
-  const updateQuantity = (id: number, size: string | undefined, qty: number) => {
-    const item = cartItems.value.find((i) => i.id === id && (i.size ?? '') === (size ?? ''))
-    if (!item) return
-    item.quantity = Math.max(1, qty)
-    saveCart(cartItems.value)
+
+  // const updateQuantity = (id: number, size: string | undefined, qty: number) => {
+  //   const item = cartItems.value.find((i) => i.id === id && (i.size ?? '') === (size ?? ''))
+  //   if (!item) return
+  //   item.quantity = Math.max(1, qty)
+  //   saveCart(cartItems.value)
+  // }
+  const updateQuantity = (id: string, size: string | undefined, qty: number) => {
+  const item = cartItems.value.find(
+    (i) => i.id === id && (i.size ?? '') === (size ?? '')
+  )
+  if (!item) return
+
+  item.quantity = Math.max(1, qty)
+  saveCart(cartItems.value)
   }
+
 
   const clearCart = () => {
     cartItems.value = []
@@ -374,30 +409,30 @@ export const useProductStore = defineStore('product', () => {
     wishlistItems,
     cartItems,
     items, // Expose for template access
-    
+
     // Computed/Getters
     allProducts,
     wishlistCount,
     cartCount,
     subtotal,
     totalItems,
-    
+
     // Product Methods
     findProductById,
     getProductDetail,
-    
+
     // Wishlist Methods
     isInWishlist,
     toggleWishlist,
     removeFromWishlist,
     clearWishlist,
-    
+
     // Cart Methods
     addToCart,
     removeItem,
     updateQuantity,
     clearCart,
-    
+
     // Modal Methods
     openQuickView,
     closeQuickView,

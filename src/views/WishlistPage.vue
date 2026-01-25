@@ -4,7 +4,7 @@ import { useProductStore, useCartStore } from '@/stores/store'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import BreadCrumb from '@/components/BreadCrumb.vue'
-import { Heart } from 'lucide-vue-next';
+import { Heart } from 'lucide-vue-next'
 
 const router = useRouter()
 const productStore = useProductStore()
@@ -25,15 +25,15 @@ const handleRemove = (productId: string) => {
 }
 
 const handleAddToCart = (productId: string) => {
-  const item = productStore.wishlistItems.find(i => i.id === productId)
+  const item = productStore.wishlistItems.find((i) => i.id === productId)
   if (item) {
     cartStore.addToCart({
-      id: Number(item.id),
+      id: item.id,
       name: item.name,
       price: parsePrice(item.price),
       img: item.img,
       size: item.size,
-      quantity: 1
+      quantity: 1,
     })
     // Optionally remove from wishlist after adding to cart
     productStore.removeFromWishlist(productId)
@@ -47,18 +47,18 @@ const goToProducts = () => {
 const moveAllToCart = () => {
   // Create a copy of the items to avoid mutation during iteration
   const itemsToMove = [...productStore.wishlistItems]
-  
+
   itemsToMove.forEach((item) => {
     cartStore.addToCart({
-      id: Number(item.id),
+      id: item.id,
       name: item.name,
-      price: parsePrice(item.price), 
+      price: parsePrice(item.price),
       img: item.img,
       size: item.size,
-      quantity: 1
+      quantity: 1,
     })
   })
-  
+
   // Clear the wishlist using the store method
   productStore.clearWishlist()
 }
@@ -100,7 +100,9 @@ const moveAllToCart = () => {
       </div>
 
       <!-- Summary -->
-      <div class="max-w-[900px] bg-gray-50 border border-gray-200 rounded-2xl shadow-[0_6px_14px_rgba(0,0,0,0.15)] p-6 mt-6">
+      <div
+        class="max-w-[900px] bg-gray-50 border border-gray-200 rounded-2xl shadow-[0_6px_14px_rgba(0,0,0,0.15)] p-6 mt-6"
+      >
         <div class="flex justify-between items-center mb-4">
           <span class="text-lg font-semibold">Total Items:</span>
           <span class="text-lg">{{ productStore.wishlistItems.length }}</span>

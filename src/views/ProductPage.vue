@@ -28,10 +28,7 @@
       <ProductCard
         v-for="item in currentProducts"
         :key="item.id"
-        :product-id="item.id"
-        :product-img="item.img"
-        :product-name="item.name"
-        :product-price="item.price"
+        :product="item"
         @view-detail="goToProductDetail(Number(item.id))"
       />
     </div>
@@ -61,10 +58,7 @@
       <ProductCard
         v-for="item in currentProductsInCategory"
         :key="item.id"
-        :product-id="item.id"
-        :product-img="item.img"
-        :product-name="item.name"
-        :product-price="item.price"
+        :product="item"
         @view-detail="goToProductDetail(Number(item.id))"
       />
     </div>
@@ -94,15 +88,12 @@
       <ProductCard
         v-for="item in currentProductsInBrand"
         :key="item.id"
-        :product-id="item.id"
-        :product-img="item.img"
-        :product-name="item.name"
-        :product-price="item.price"
-         @view-detail="goToProductDetail(Number(item.id))"
+        :product="item"
+        @view-detail="goToProductDetail(Number(item.id))"
       />
     </div>
   </div>
-  <QuickViewModal/>
+  <QuickViewModal />
 </template>
 
 <script setup lang="ts">
@@ -124,7 +115,6 @@ import {
   type BrandKey,
 } from '@/stores/store'
 
-
 /** Active tab state */
 const activeTab = ref<TabKey>('featured')
 const activeTabForCategory = ref<CategoryKey>('athleticFootwear')
@@ -132,7 +122,9 @@ const activeTabForBrand = ref<BrandKey>('nike')
 
 /** Computed lists */
 const currentProducts = computed(() => products[activeTab.value] || [])
-const currentProductsInCategory = computed(() => productsByCategory[activeTabForCategory.value] || [])
+const currentProductsInCategory = computed(
+  () => productsByCategory[activeTabForCategory.value] || [],
+)
 const currentProductsInBrand = computed(() => productsByBrand[activeTabForBrand.value] || [])
 
 const goToProductDetail = (id: number) => {
