@@ -1,93 +1,31 @@
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<!-- QuickViewModal.vue -->
-<!-- <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+<script setup lang="ts">
+import { computed, ref, watch, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { useProductStore } from '@/stores/store'
 
 const productStore = useProductStore()
+const router = useRouter()
+
+//  SINGLE source of truth
 const product = computed(() => productStore.selectedProduct)
 
-
-// const props = defineProps<{
-//   isOpen: boolean
-//   product: {
-//     id: string
-//     name: string
-//     price: string
-//     img: string
-//     description: string
-//     sizes: string[]
-//     brand: string
-//     category: string
-//     madeIn: string
-//   } | null
-// }>()
-
-// const emit = defineEmits<{
-//   (e: 'close'): void
-//   (e: 'add-to-cart', payload: { product: any; size: string; qty: number }): void
-// }>()
-
-const product = computed(() => props.product)
-
-// load image from assets (falls back to placeholder if missing)
-const imageUrl = computed(() => {
-  if (!product.value?.img) return ''
-  try {
-    return new URL(`../assets/images/${product.value.img}`, import.meta.url).href
-  } catch {
-    return ''
+//  View details handler
+const goToDetail = async () => {
+  if (!product.value?.id) {
+    console.error('Product ID missing', product.value)
+    return
   }
-})
 
-const selectedSize = ref('')
-const quantity = ref(1)
-
-watch(
-  () => props.product,
-  (newVal) => {
-    if (!newVal) return
-    selectedSize.value = newVal.sizes?.[0] ?? ''
-    quantity.value = 1
-  },
-  { immediate: true },
-)
-
-// const addToCart = () => {
-//   if (!product.value) return
-//   emit('add-to-cart', {
-//     product: product.value,
-//     size: selectedSize.value,
-//     qty: quantity.value,
-//   })
-//   emit('close')
-// }
-const addToCart = () => {
-  if (!product.value) return
-
-  productStore.addToCart({
-    id: Number(product.value.id),
-    name: product.value.name,
-    price: Number(product.value.price.replace('$', '')),
-    img: product.value.img,
-    size: selectedSize.value,
-    quantity: quantity.value,
-  })
+  const id = product.value.id
 
   productStore.closeQuickView()
+  await nextTick()
+
+  router.push({
+    name: 'detail',
+    params: { id },
+  })
 }
-
-</script> -->
-<script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useProductStore } from '@/stores/store'
-
-const productStore = useProductStore()
-
-// ✅ SINGLE source of truth
-const product = computed(() => productStore.selectedProduct)
-
-// load image from assets
 const imageUrl = computed(() => {
   if (!product.value?.img) return ''
   try {
@@ -100,7 +38,6 @@ const imageUrl = computed(() => {
 const selectedSize = ref('')
 const quantity = ref(1)
 
-// ✅ watch STORE product
 watch(
   product,
   (p) => {
@@ -138,12 +75,6 @@ const addToCart = () => {
     <div
       class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl"
     >
-      <!-- Close Button -->
-      <!-- <button
-        @click="emit('close')"
-        class="absolute top-4 right-4 z-10 text-gray-500 hover:text-gray-800"
-        aria-label="Close"
-      > -->
       <button
         @click="productStore.closeQuickView()"
         class="absolute top-4 right-4 z-10 text-gray-500 hover:text-gray-800"
@@ -256,8 +187,9 @@ const addToCart = () => {
             <p><strong>Made in:</strong> {{ product.madeIn }}</p>
             <p><strong>Brand:</strong> {{ product.brand }}</p>
           </div>
-
-          <a href="#" class="mt-4 text-xs text-blue-600 hover:underline">View details</a>
+          <button @click="goToDetail" class="mt-4 text-xs text-blue-600 hover:underline text-left">
+            View details
+          </button>
         </div>
       </div>
     </div>

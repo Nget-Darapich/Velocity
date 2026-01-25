@@ -32,7 +32,6 @@
         :product-img="item.img"
         :product-name="item.name"
         :product-price="item.price"
-        @quick-view="openQuickView"
         @view-detail="goToProductDetail(Number(item.id))"
       />
     </div>
@@ -66,7 +65,7 @@
         :product-img="item.img"
         :product-name="item.name"
         :product-price="item.price"
-        @quick-view="openQuickView"
+        @view-detail="goToProductDetail(Number(item.id))"
       />
     </div>
   </div>
@@ -99,26 +98,17 @@
         :product-img="item.img"
         :product-name="item.name"
         :product-price="item.price"
-        @quick-view="openQuickView"
+         @view-detail="goToProductDetail(Number(item.id))"
       />
     </div>
   </div>
-
-  <!--  Quick View Modal -->
-  <QuickViewModal
-    v-if="selectedProduct"
-    :is-open="!!selectedProduct"
-    :product="selectedProduct"
-    @close="closeQuickView"
-    @add-to-cart="handleAddToCartFromQuickView"
-  />
+  <QuickViewModal/>
 </template>
 
 <script setup lang="ts">
 import ProductCard from '@/components/ProductCard.vue'
 import QuickViewModal from '@/components/QuickViewModal.vue'
 import { computed, ref } from 'vue'
-import { useCartStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -129,15 +119,11 @@ import {
   products,
   productsByCategory,
   productsByBrand,
-  useProductStore,
   type TabKey,
   type CategoryKey,
   type BrandKey,
 } from '@/stores/store'
 
-
-/** cart store */
-const cart = useCartStore()
 
 /** Active tab state */
 const activeTab = ref<TabKey>('featured')
@@ -149,36 +135,7 @@ const currentProducts = computed(() => products[activeTab.value] || [])
 const currentProductsInCategory = computed(() => productsByCategory[activeTabForCategory.value] || [])
 const currentProductsInBrand = computed(() => productsByBrand[activeTabForBrand.value] || [])
 
-/** modal state from product store */
-const { selectedProduct, openQuickView, closeQuickView } = useProductStore()
-
-interface QuickViewPayload {
-  product: {
-    id: string | number;
-    name: string;
-    price: string | number;
-    img: string;
-  };
-  size: string;
-  qty: number;
-}
 const goToProductDetail = (id: number) => {
   router.push(`/product/${id}`)
-}
-
-/**  QuickView -> Add to Cart */
-const handleAddToCartFromQuickView = ({ product, size, qty }: QuickViewPayload) => {
-  cart.addToCart({
-    // Ensure ID is a number as required by cart.ts
-    id: typeof product.id === 'string' ? parseInt(product.id) : product.id,
-    name: product.name,
-    // Ensure Price is a number (removes '$' if it's a string)
-    price: typeof product.price === 'string'
-      ? parseFloat(product.price.replace('$', ''))
-      : product.price,
-    img: product.img,
-    size,
-    quantity: qty,
-  })
 }
 </script>
