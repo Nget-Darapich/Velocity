@@ -50,7 +50,8 @@ const openProductDetail = () => {
 
 const addToCart = () => {
   cart.addToCart({
-    id: Number(props.productId),
+    // id: Number(props.productId),
+    id: props.productId,
     name: props.productName,
     price: Number(props.productPrice.replace('$', '')),
     img: props.productImg,
