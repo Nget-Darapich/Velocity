@@ -1,45 +1,57 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useCartStore } from '@/stores/store'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+
+  // always scroll to top when navigating (footer links, pages, etc.)
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition
+    return { top: 0, left: 0, behavior: 'smooth' }
+  },
+
   routes: [
     {
       path: '/',
       component: () => import('@/layouts/AppLayout.vue'),
       children: [
         { path: '', name: 'home', component: () => import('@/views/HomePage.vue') },
+
         { path: 'cart', name: 'Cart', component: () => import('@/views/CartPage.vue') },
-        { path: 'checkout', name: 'Checkout', component: () => import('@/views/CheckoutPage.vue') },
+
+        // KEEP ONLY ONE checkout route (with guard)
+        {
+          path: 'checkout',
+          name: 'Checkout',
+          component: () => import('@/views/CheckoutPage.vue'),
+          beforeEnter: () => {
+            const cart = useCartStore()
+            if (!cart.items.length) {
+              return { name: 'Cart' } // redirect if empty
+            }
+            return true
+          },
+        },
 
         { path: 'wishlist', name: 'wishlist', component: () => import('@/views/WishlistPage.vue') },
-
         { path: 'product/:id', name: 'detail', component: () => import('@/views/ProductDetailPage.vue') },
 
-        // PAGES (Footer links)
+        // Footer pages
         { path: 'about', name: 'about', component: () => import('@/views/AboutPage.vue') },
         { path: 'faq', name: 'faq', component: () => import('@/views/FaqPage.vue') },
         { path: 'sitemap', name: 'sitemap', component: () => import('@/views/SitemapPage.vue') },
         { path: 'terms', name: 'terms', component: () => import('@/views/TermsPage.vue') },
-
         { path: 'contact', name: 'contact', component: () => import('@/views/ContactPage.vue') },
         { path: 'track-order', name: 'trackOrder', component: () => import('@/views/TrackOrderPage.vue') },
         { path: 'product-care', name: 'productCare', component: () => import('@/views/ProductCarePage.vue') },
-        {
-          path: 'shipping-returns',
-          name: 'shippingReturns',
-          component: () => import('@/views/ShippingReturnsPage.vue'),
-        },
+        { path: 'shipping-returns', name: 'shippingReturns', component: () => import('@/views/ShippingReturnsPage.vue') },
 
+        // Products layout
         {
           path: 'products',
-          name: 'product',
           component: () => import('@/layouts/ProductLayout.vue'),
           children: [
-            {
-              path: '',
-              name: 'products',
-              component: () => import('@/views/ProductPage.vue'),
-            },
+            { path: '', name: 'products', component: () => import('@/views/ProductPage.vue') },
 
             // filtered products route
             {
@@ -62,10 +74,9 @@ const router = createRouter({
               component: () => import('@/views/BrandPage.vue'),
               beforeEnter: (to) => {
                 const validBrands = ['nike', 'vans', 'adidas']
-                const brand = to.params.brand as string
-                if (!validBrands.includes(brand.toLowerCase())) {
-                  return { name: 'products' }
-                }
+                const brand = String(to.params.brand || '').toLowerCase()
+                if (!validBrands.includes(brand)) return { name: 'products' }
+                return true
               },
             },
 
@@ -81,10 +92,9 @@ const router = createRouter({
                   'sustainableFootwear',
                   'sandalsAndslides',
                 ]
-                const category = to.params.category as string
-                if (!validCategories.includes(category)) {
-                  return { name: 'products' }
-                }
+                const category = String(to.params.category || '')
+                if (!validCategories.includes(category)) return { name: 'products' }
+                return true
               },
             },
           ],
@@ -92,6 +102,7 @@ const router = createRouter({
       ],
     },
 
+    // Auth
     {
       path: '/auth',
       component: () => import('@/layouts/LoginSignupLayout.vue'),
@@ -101,7 +112,7 @@ const router = createRouter({
       ],
     },
 
-    // Admin side
+    // Admin
     {
       path: '/admin',
       component: () => import('@/layouts/AdminLayout.vue'),

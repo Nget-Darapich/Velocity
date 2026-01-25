@@ -1,1 +1,32 @@
 @import "tailwindcss";
+/* ================================
+   GLOBAL CLICKABLE UX (Footer/Buttons/Links/Cards)
+================================ */
+.clickable {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+}
+
+.clickable:active {
+  transform: translateY(0px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.link-hover {
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.link-hover:hover {
+  opacity: 0.75;
+}
+
+/* optional: ensure links look clickable */
+a {
+  cursor: pointer;
+}
