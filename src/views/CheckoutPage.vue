@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/store'
+import { useOrdersStore } from '@/stores/orders'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 import promoIcon from '@/assets/images/promo-icon.png'
 import checkoutImg from '@/assets/images/checkout.png'
@@ -11,8 +12,10 @@ import rupayImg from '@/assets/images/rupay.png'
 
 
 
+
 const router = useRouter()
 const cart = useCartStore()
+const orders = useOrdersStore()
 
 /** Promo code (editable) */
 const promo = ref('CODE123')
@@ -47,8 +50,25 @@ const getItemImage = (img: string) => new URL(`../assets/images/${img}`, import.
 
 const goBackToCart = () => router.push('/cart')
 const checkoutOrder = () => {
-  alert('Checkout submitted (placeholder)')
+  if (!cart.items.length) {
+    alert('Your cart is empty.')
+    return
+  }
+
+  // create order (Order ID generated here)
+  const order = orders.placeOrder({
+    total: Number(total.value.toFixed(2)),
+    itemsCount: cart.items.reduce((sum, i) => sum + i.quantity, 0),
+    email: email.value || undefined,
+  })
+
+  // clear cart (ONLY if you have this function)
+  if (typeof cart.clearCart === 'function') cart.clearCart()
+
+  // go to track page with id
+  router.push({ path: '/track-order', query: { id: order.id } })
 }
+
 </script>
 
 <template>
