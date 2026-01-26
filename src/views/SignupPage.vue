@@ -1,4 +1,4 @@
-<!-- src/views/LoginPage.vue -->
+<!-- src/views/SignupPage.vue -->
 <template>
   <div class="flex flex-col md:flex-row items-center min-h-[calc(100vh-200px)] bg-white p-4">
     <!-- Left: Sneaker Image -->
@@ -10,10 +10,18 @@
       />
     </div>
 
-    <!-- Right: Login Form -->
+    <!-- Right: Signup Form -->
     <div class="md:w-1/3 w-full p-6 md:p-12">
       <h1 class="text-3xl font-bold mb-2">Create an account</h1>
       <p class="text-gray-600 mb-8">Enter your details below</p>
+
+      <!-- Error/Success Message -->
+      <div v-if="errorMessage" class="mb-4 p-3 bg-red-100 text-red-700 rounded">
+        {{ errorMessage }}
+      </div>
+      <div v-if="successMessage" class="mb-4 p-3 bg-green-100 text-green-700 rounded">
+        {{ successMessage }}
+      </div>
 
       <form @submit.prevent="handleSignup" class="space-y-6">
         <!-- Name Field -->
@@ -23,6 +31,7 @@
             id="name"
             v-model="formData.name"
             type="text"
+            required
             class="w-full border-b border-gray-400 py-2 focus:border-red-700 outline-none"
           />
         </div>
@@ -36,6 +45,7 @@
             id="identifier"
             v-model="formData.identifier"
             type="text"
+            required
             class="w-full border-b border-gray-400 py-2 focus:border-red-700 outline-none"
           />
         </div>
@@ -47,16 +57,20 @@
             id="password"
             v-model="formData.password"
             type="password"
+            required
+            minlength="6"
             class="w-full border-b border-gray-400 py-2 focus:border-red-700 outline-none"
           />
+          <p class="text-xs text-gray-500 mt-1">Must be at least 6 characters</p>
         </div>
 
         <!-- Create Account Button -->
         <button
           type="submit"
-          class="w-full bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-6 rounded transition-colors"
+          :disabled="isLoading"
+          class="w-full bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-6 rounded transition-colors disabled:opacity-50"
         >
-          Create Account
+          {{ isLoading ? 'Creating Account...' : 'Create Account' }}
         </button>
 
         <!-- Google Signup Button -->
@@ -81,6 +95,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const router = useRouter()
+const authStore = useAuthStore()
 
 const formData = ref({
   name: '',
@@ -88,7 +107,41 @@ const formData = ref({
   password: '',
 })
 
-const handleSignup = () => {
-  console.log('Signup attempt:', formData.value)
+const isLoading = ref(false)
+const errorMessage = ref('')
+const successMessage = ref('')
+
+const handleSignup = async () => {
+  errorMessage.value = ''
+  successMessage.value = ''
+  isLoading.value = true
+
+  try {
+    // Basic validation
+    if (formData.value.password.length < 6) {
+      errorMessage.value = 'Password must be at least 6 characters long'
+      isLoading.value = false
+      return
+    }
+
+    const success = authStore.signup(
+      formData.value.name,
+      formData.value.identifier,
+      formData.value.password
+    )
+    
+    if (success) {
+      successMessage.value = 'Account created successfully! Redirecting...'
+      setTimeout(() => {
+        router.push('/')
+      }, 1500)
+    } else {
+      errorMessage.value = 'An account with this email already exists'
+    }
+  } catch (error) {
+    errorMessage.value = 'An error occurred. Please try again.'+ (error as Error).message
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>

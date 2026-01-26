@@ -1,10 +1,11 @@
+// src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router'
 import { useCartStore } from '@/stores/store'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
 
-  // always scroll to top when navigating (footer links, pages, etc.)
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition
     return { top: 0, left: 0, behavior: 'smooth' }
@@ -16,10 +17,7 @@ const router = createRouter({
       component: () => import('@/layouts/AppLayout.vue'),
       children: [
         { path: '', name: 'home', component: () => import('@/views/HomePage.vue') },
-
         { path: 'cart', name: 'Cart', component: () => import('@/views/CartPage.vue') },
-
-        // KEEP ONLY ONE checkout route (with guard)
         {
           path: 'checkout',
           name: 'Checkout',
@@ -27,16 +25,13 @@ const router = createRouter({
           beforeEnter: () => {
             const cart = useCartStore()
             if (!cart.items.length) {
-              return { name: 'Cart' } // redirect if empty
+              return { name: 'Cart' }
             }
             return true
           },
         },
-
         { path: 'wishlist', name: 'wishlist', component: () => import('@/views/WishlistPage.vue') },
         { path: 'product/:id', name: 'detail', component: () => import('@/views/ProductDetailPage.vue') },
-
-        // Footer pages
         { path: 'about', name: 'about', component: () => import('@/views/AboutPage.vue') },
         { path: 'faq', name: 'faq', component: () => import('@/views/FaqPage.vue') },
         { path: 'sitemap', name: 'sitemap', component: () => import('@/views/SitemapPage.vue') },
@@ -45,29 +40,13 @@ const router = createRouter({
         { path: 'track-order', name: 'trackOrder', component: () => import('@/views/TrackOrderPage.vue') },
         { path: 'product-care', name: 'productCare', component: () => import('@/views/ProductCarePage.vue') },
         { path: 'shipping-returns', name: 'shippingReturns', component: () => import('@/views/ShippingReturnsPage.vue') },
-
-        // Products layout
         {
           path: 'products',
           component: () => import('@/layouts/ProductLayout.vue'),
           children: [
             { path: '', name: 'products', component: () => import('@/views/ProductPage.vue') },
-
-            // filtered products route
-            {
-              path: 'filtered',
-              name: 'filteredProducts',
-              component: () => import('@/views/FilteredProductsPage.vue'),
-            },
-
-            // search results route
-            {
-              path: 'search',
-              name: 'searchResults',
-              component: () => import('@/views/SearchResultsPage.vue'),
-            },
-
-            // brand route
+            { path: 'filtered', name: 'filteredProducts', component: () => import('@/views/FilteredProductsPage.vue') },
+            { path: 'search', name: 'searchResults', component: () => import('@/views/SearchResultsPage.vue') },
             {
               path: ':brand',
               name: 'brand',
@@ -79,19 +58,12 @@ const router = createRouter({
                 return true
               },
             },
-
-            // category route
             {
               path: 'category/:category',
               name: 'category',
               component: () => import('@/views/CategoryPage.vue'),
               beforeEnter: (to) => {
-                const validCategories = [
-                  'athleticFootwear',
-                  'luxuryLeatherShoes',
-                  'sustainableFootwear',
-                  'sandalsAndslides',
-                ]
+                const validCategories = ['athleticFootwear', 'luxuryLeatherShoes', 'sustainableFootwear', 'sandalsAndslides']
                 const category = String(to.params.category || '')
                 if (!validCategories.includes(category)) return { name: 'products' }
                 return true
@@ -102,20 +74,42 @@ const router = createRouter({
       ],
     },
 
-    // Auth
+    // Auth routes - redirect to home if already logged in
     {
       path: '/auth',
       component: () => import('@/layouts/LoginSignupLayout.vue'),
+      beforeEnter: () => {
+        const auth = useAuthStore()
+        if (auth.isAuthenticated) {
+          return { name: 'home' }
+        }
+        return true
+      },
       children: [
         { path: 'login', name: 'login', component: () => import('@/views/LoginPage.vue') },
         { path: 'signup', name: 'signup', component: () => import('@/views/SignupPage.vue') },
       ],
     },
 
-    // Admin
+    // Admin routes - require admin authentication
     {
       path: '/admin',
       component: () => import('@/layouts/AdminLayout.vue'),
+      beforeEnter: () => {
+        const auth = useAuthStore()
+        
+        // Check if user is authenticated and is admin
+        if (!auth.isAuthenticated) {
+          return { name: 'login', query: { redirect: '/admin' } }
+        }
+        
+        if (!auth.isAdmin) {
+          // Logged in but not admin - redirect to home
+          return { name: 'home' }
+        }
+        
+        return true
+      },
       children: [
         { path: '', component: () => import('@/views/admin/AdminDashboard.vue') },
         { path: 'products', component: () => import('@/views/admin/AdminProducts.vue') },
@@ -127,6 +121,12 @@ const router = createRouter({
       ],
     },
   ],
+})
+
+// Initialize auth store before each route
+router.beforeEach(() => {
+  const auth = useAuthStore()
+  auth.init()
 })
 
 export default router
