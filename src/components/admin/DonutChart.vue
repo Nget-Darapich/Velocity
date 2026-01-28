@@ -1,15 +1,10 @@
 <template>
-  <canvas ref="canvas"></canvas>
+  <canvas ref="canvas" class="w-full h-full"></canvas>
 </template>
 
 <script setup lang="ts">
 import { onMounted, watch, ref } from 'vue'
-import {
-  Chart,
-  ArcElement,
-  Tooltip,
-  Legend,
-} from 'chart.js'
+import { Chart, ArcElement, Tooltip, Legend } from 'chart.js'
 
 Chart.register(ArcElement, Tooltip, Legend)
 
@@ -35,13 +30,7 @@ const renderChart = () => {
       datasets: [
         {
           data: props.data.values,
-          backgroundColor: [
-            '#f97316',
-            '#22c55e',
-            '#3b82f6',
-            '#a855f7',
-            '#ec4899',
-          ],
+          backgroundColor: ['#f97316', '#22c55e', '#3b82f6', '#a855f7', '#ec4899'],
           borderWidth: 0,
         },
       ],
@@ -59,5 +48,6 @@ const renderChart = () => {
 }
 
 onMounted(renderChart)
-watch(() => props.data, renderChart, { deep: true })
+// watch(() => props.data, renderChart, { deep: true })
+watch(() => [props.data.labels, props.data.values], renderChart, { deep: true })
 </script>

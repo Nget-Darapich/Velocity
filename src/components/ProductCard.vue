@@ -9,7 +9,6 @@ import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
 
-
 const props = defineProps<{
   productImg: string
   productName: string
@@ -17,12 +16,30 @@ const props = defineProps<{
   productId: string
 }>()
 
+
 const cart = useCartStore()
 const { toggleWishlist, isInWishlist } = useProductStore() //
 
-const imageUrl = computed(
-  () => new URL(`../assets/images/${props.productImg}`, import.meta.url).href,
-)
+const imageUrl = computed(() => {
+  // Case 1: Base64 image (admin uploaded)
+  // if (props.productImg?.startsWith('data:image')) {
+  //   return props.productImg
+  // }
+   if (props.productImg.startsWith('data:image')) {
+    return props.productImg
+  }
+
+  // Case 2: Static asset image (default products)
+  try {
+    return new URL(
+      `../assets/images/${props.productImg}`,
+      import.meta.url
+    ).href
+  } catch {
+    return ''
+  }
+})
+
 const productStore = useProductStore()
 
 const openQuickView = () => {
@@ -42,8 +59,8 @@ const openProductDetail = () => {
     params: { id: props.productId },
     query: {
       from: route.name?.toString(), // home | products | brand | category
-      brand: route.params.brand,           // PASS BRAND
-      category: route.params.category,     // PASS CATEGORY
+      brand: route.params.brand, // PASS BRAND
+      category: route.params.category, // PASS CATEGORY
     },
   })
 }

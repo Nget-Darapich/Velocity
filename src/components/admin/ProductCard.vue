@@ -7,11 +7,16 @@ const props = defineProps<{
 }>()
 
 const imageUrl = computed(() => {
+  const img = props.product.img
+
+  //  Base64 image (uploaded by admin)
+  if (img.startsWith('data:image')) {
+    return img
+  }
+
+  //  Static asset image
   try {
-    return new URL(
-      `../../assets/images/${props.product.img}`,
-      import.meta.url
-    ).href
+    return new URL(`../../assets/images/${img}`, import.meta.url).href
   } catch {
     return ''
   }
@@ -22,21 +27,17 @@ const imageUrl = computed(() => {
   <div>
     <!-- Image Box -->
     <div class="relative bg-[#DEE3F1] rounded-xl h-[230px] flex items-center justify-center">
-      <img
-        v-if="imageUrl"
-        :src="imageUrl"
-        class="max-h-[140px] object-contain"
-      />
+      <img v-if="imageUrl" :src="imageUrl" class="max-h-[140px] object-contain" />
       <div v-else class="text-gray-400 text-sm">No Image</div>
 
       <!-- Actions -->
       <div class="absolute top-3 right-3 flex flex-col gap-2">
-        <button class="bg-white w-9 h-9 rounded-full flex items-center justify-center shadow">
+        <!-- <button class="bg-white w-9 h-9 rounded-full flex items-center justify-center shadow">
           ✏️
         </button>
         <button class="bg-white w-9 h-9 rounded-full flex items-center justify-center shadow">
           🗑️
-        </button>
+        </button> -->
       </div>
     </div>
 
