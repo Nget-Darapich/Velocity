@@ -63,7 +63,7 @@
 
       <div class="grid grid-cols-5 gap-8">
         <ProductCard
-          v-for="item in productsByCategory"
+          v-for="item in currentCategoryProducts"
           :key="item.id"
           :productImg="item.img"
           :productName="item.name"
@@ -96,7 +96,7 @@
 
       <div class="grid grid-cols-5 gap-8">
         <ProductCard
-          v-for="item in productsByBrand"
+          v-for="item in currentBrandProducts"
           :key="item.id"
           :productImg="item.img"
           :productName="item.name"
@@ -121,6 +121,8 @@ import {
   tabs,
   categoryTabs,
   brandTabs,
+  productsByCategory,
+  productsByBrand,
   type TabKey,
   type CategoryKey,
   type BrandKey
@@ -134,9 +136,29 @@ const activeTab = ref<TabKey>('featured')
 const activeCategory = ref<CategoryKey>('athleticFootwear')
 const activeBrand = ref<BrandKey>('nike')
 
-// Featured / New / Best Seller
+// Convert user products to the Product format
+const convertedUserProducts = computed(() => {
+  return store.userProducts.map(p => ({
+    id: p.id,
+    name: p.name,
+    price: typeof p.price === 'number' ? `$${p.price.toFixed(2)}` : p.price,
+    img: p.img,
+    isNew: p.isNew,
+    isDiscounted: p.isDiscounted,
+    madeIn: undefined,
+    sizeRange: p.sizeRange,
+    brand: p.brand
+  }))
+})
+
+// Combine hardcoded products with user-added products
+const allProductsCombined = computed(() => {
+  return [...store.allProducts, ...convertedUserProducts.value]
+})
+
+// Featured / New / Best Seller - now includes user products
 const currentProducts = computed(() => {
-  return store.userProducts.filter(p => {
+  return allProductsCombined.value.filter(p => {
     if (activeTab.value === 'featured') return true
     if (activeTab.value === 'newArrivals') return p.isNew
     if (activeTab.value === 'bestSeller') return p.isDiscounted
@@ -144,18 +166,44 @@ const currentProducts = computed(() => {
   })
 })
 
-// Category
-const productsByCategory = computed(() => {
-  return store.userProducts.filter(
-    p => p.category === activeCategory.value
-  )
+// Category - use hardcoded productsByCategory data + filter user products by category
+const currentCategoryProducts = computed(() => {
+  const hardcodedProducts = productsByCategory[activeCategory.value]
+  const userCategoryProducts = store.userProducts
+    .filter(p => p.category === activeCategory.value)
+    .map(p => ({
+      id: p.id,
+      name: p.name,
+      price: typeof p.price === 'number' ? `$${p.price.toFixed(2)}` : p.price,
+      img: p.img,
+      isNew: p.isNew,
+      isDiscounted: p.isDiscounted,
+      madeIn: undefined,
+      sizeRange: p.sizeRange,
+      brand: p.brand
+    }))
+  
+  return [...hardcodedProducts, ...userCategoryProducts]
 })
 
-// Brand
-const productsByBrand = computed(() => {
-  return store.userProducts.filter(
-    p => p.brand === activeBrand.value
-  )
+// Brand - use hardcoded productsByBrand data + filter user products by brand
+const currentBrandProducts = computed(() => {
+  const hardcodedProducts = productsByBrand[activeBrand.value]
+  const userBrandProducts = store.userProducts
+    .filter(p => p.brand === activeBrand.value)
+    .map(p => ({
+      id: p.id,
+      name: p.name,
+      price: typeof p.price === 'number' ? `$${p.price.toFixed(2)}` : p.price,
+      img: p.img,
+      isNew: p.isNew,
+      isDiscounted: p.isDiscounted,
+      madeIn: undefined,
+      sizeRange: p.sizeRange,
+      brand: p.brand
+    }))
+  
+  return [...hardcodedProducts, ...userBrandProducts]
 })
 
 const goToProductDetail = (id: string) => {

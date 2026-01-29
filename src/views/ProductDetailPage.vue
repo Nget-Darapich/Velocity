@@ -15,17 +15,22 @@ const productStore = useProductStore()
 /* get product by route id */
 
 const product = computed(() => productStore.getProductDetail?.(route.params.id as string))
-/* image */
 
+/* image - handle both asset images and base64 images */
 const imageUrl = computed(() => {
   const imgName = product.value?.img
   if (!imgName) return ''
-  console.log('image')
+  
+  // Check if it's a base64 image (starts with data:image)
+  if (imgName.startsWith('data:image')) {
+    return imgName
+  }
+  
+  // Otherwise, try to load from assets
   try {
     return new URL(`../assets/images/${imgName}`, import.meta.url).href
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
-    console.error('Image not found:', imgName)
+    console.error('Image not found:' + err, imgName)
     return '' // or fallback image
   }
 })

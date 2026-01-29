@@ -14,7 +14,6 @@
           :product-img="item.img"
           :product-name="item.name"
           :product-price="item.price"
-          @quick-view="handleQuickView"
           @view-detail="goToProductDetail(item.id)"
         />
       </div>
@@ -28,13 +27,7 @@
       </router-link>
     </div>
 
-    <QuickViewModal
-      v-if="selectedProduct"
-      :is-open="!!selectedProduct"
-      :product="selectedProduct"
-      @close="closeQuickView"
-      @add-to-cart="handleAddToCartFromQuickView"
-    />
+    <QuickViewModal />
   </div>
 </template>
 
@@ -43,14 +36,11 @@ import ProductCard from '@/components/ProductCard.vue'
 import QuickViewModal from '@/components/QuickViewModal.vue'
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useProductStore, useCartStore } from '@/stores/store'
+import { useProductStore } from '@/stores/store'
 
 const route = useRoute()
 const router = useRouter()
 const productStore = useProductStore()
-const cart = useCartStore()
-
-const { selectedProduct, openQuickView, closeQuickView } = productStore
 
 const searchQuery = computed(() => route.query.q as string || '')
 
@@ -59,39 +49,10 @@ const searchResults = computed(() => {
   return productStore.searchProducts(searchQuery.value)
 })
 
-const handleQuickView = (productId: string) => {
-  openQuickView(productId)
-}
-
 const goToProductDetail = (id: string) => {
   router.push({
     path: `/product/${id}`,
     query: { from: 'search', q: searchQuery.value }
-  })
-}
-
-interface QuickViewPayload {
-  product: {
-    id: string | number
-    name: string
-    price: string | number
-    img: string
-  }
-  size: string
-  qty: number
-}
-
-const handleAddToCartFromQuickView = ({ product, size, qty }: QuickViewPayload) => {
-  cart.addToCart({
-    //id: typeof product.id === 'string' ? parseInt(product.id) : product.id,
-    id: typeof product.id === 'string' ? product.id : product.id.toString(),
-    name: product.name,
-    price: typeof product.price === 'string'
-      ? parseFloat(product.price.replace('$', ''))
-      : product.price,
-    img: product.img,
-    size,
-    quantity: qty,
   })
 }
 </script>

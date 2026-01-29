@@ -335,7 +335,7 @@ export const productsByCategory: Record<CategoryKey, Product[]> = {
       price: '$25.00',
       img: 'chelsea.png',
       madeIn: 'US',
-      sizeRange: '15-27',
+      sizeRange: '40-46',
       brand: 'Nike',
     },
     {
@@ -344,38 +344,37 @@ export const productsByCategory: Record<CategoryKey, Product[]> = {
       price: '$25.00',
       img: 'running.png',
       madeIn: 'UK',
-      sizeRange: '40-46',
+      sizeRange: '28-34',
       brand: 'Adidas',
     },
     {
       id: '30',
-      name: 'Premium Leather Chelsea Boots',
-      price: '$950.00',
-      img: 'chelsea.png',
+      name: 'Classic White Tennis Sneakers',
+      price: '$25.00',
+      img: 'tennis.png',
       madeIn: 'CN',
-      sizeRange: '28-34',
+      sizeRange: '35-39',
       brand: 'Vans',
-      isNew: true,
     },
   ],
   sandalsAndslides: [
     {
       id: '31',
-      name: 'Premium Leather Chelsea Boots',
+      name: 'Waterproof White Sneaker',
       price: '$25.00',
-      img: 'chelsea.png',
+      img: 'waterproof.png',
       madeIn: 'US',
-      sizeRange: '35-39',
+      sizeRange: '40-46',
       brand: 'Nike',
-      isDiscounted: true,
+      isNew: true,
     },
     {
       id: '32',
-      name: 'Classic White Tennis Sneakers',
-      price: '$150.00',
-      img: 'tennis.png',
+      name: 'Premium Leather Chelsea Boots',
+      price: '$25.00',
+      img: 'chelsea.png',
       madeIn: 'UK',
-      sizeRange: '40-46',
+      sizeRange: '35-39',
       brand: 'Adidas',
     },
     {
@@ -386,141 +385,261 @@ export const productsByCategory: Record<CategoryKey, Product[]> = {
       madeIn: 'CN',
       sizeRange: '40-46',
       brand: 'Nike',
+      isDiscounted: true,
     },
     {
       id: '34',
-      name: 'Waterproof White Sneaker',
+      name: 'Classic White Tennis Sneakers',
       price: '$21.00',
-      img: 'waterproof.png',
+      img: 'tennis.png',
       madeIn: 'US',
-      sizeRange: '35-39',
+      sizeRange: '28-34',
       brand: 'Vans',
-      isNew: true,
     },
     {
       id: '35',
-      name: 'Premium Leather Chelsea Boots',
-      price: '$250.00',
-      img: 'chelsea.png',
+      name: 'Waterproof White Sneaker',
+      price: '$25.00',
+      img: 'waterproof.png',
       madeIn: 'UK',
       sizeRange: '15-27',
       brand: 'Adidas',
-      isDiscounted: true,
     },
   ],
 }
 
 export const productsByBrand: Record<BrandKey, Product[]> = {
-  nike: Array.from({ length: 10 }, (_, i) => ({
-    id: `nike-${i + 1}`,
-    name: 'Classic White Tennis Sneakers',
-    price: i % 2 === 0 ? '$25.00' : '$150.00',
-    img: 'tennis.png',
-    madeIn: ['US', 'UK', 'CN'][i % 3],
-    sizeRange: ['15-27', '28-34', '35-39', '40-46'][i % 4],
-    brand: 'Nike',
-    isNew: i % 3 === 0,
-    isDiscounted: i % 4 === 0,
-  })),
-  vans: Array.from({ length: 10 }, (_, i) => ({
-    id: `vans-${i + 1}`,
-    name: 'Premium Leather Chelsea Boots',
-    price: i % 2 === 0 ? '$25.00' : '$550.00',
-    img: 'chelsea.png',
-    madeIn: ['US', 'UK', 'CN'][i % 3],
-    sizeRange: ['15-27', '28-34', '35-39', '40-46'][i % 4],
-    brand: 'Vans',
-    isNew: i % 3 === 1,
-    isDiscounted: i % 4 === 1,
-  })),
-  adidas: Array.from({ length: 10 }, (_, i) => ({
-    id: `adidas-${i + 1}`,
-    name: 'Waterproof White Sneaker',
-    price: i % 2 === 0 ? '$25.00' : '$350.00',
-    img: 'waterproof.png',
-    madeIn: ['US', 'UK', 'CN'][i % 3],
-    sizeRange: ['15-27', '28-34', '35-39', '40-46'][i % 4],
-    brand: 'Adidas',
-    isNew: i % 3 === 2,
-    isDiscounted: i % 4 === 2,
-  })),
+  nike: [
+    {
+      id: '36',
+      name: 'Premium Leather Chelsea Boots',
+      price: '$25.00',
+      img: 'chelsea.png',
+      madeIn: 'US',
+      sizeRange: '40-46',
+      brand: 'Nike',
+    },
+    {
+      id: '37',
+      name: 'Light Weight Running Shoes',
+      price: '$21.00',
+      img: 'running.png',
+      madeIn: 'UK',
+      sizeRange: '35-39',
+      brand: 'Nike',
+      isNew: true,
+    },
+    {
+      id: '38',
+      name: 'Waterproof White Sneaker',
+      price: '$21.00',
+      img: 'waterproof.png',
+      madeIn: 'CN',
+      sizeRange: '40-46',
+      brand: 'Nike',
+    },
+    {
+      id: '39',
+      name: 'Classic White Tennis Sneakers',
+      price: '$25.00',
+      img: 'tennis.png',
+      madeIn: 'US',
+      sizeRange: '28-34',
+      brand: 'Nike',
+      isDiscounted: true,
+    },
+    {
+      id: '40',
+      name: 'Premium Leather Chelsea Boots',
+      price: '$25.00',
+      img: 'chelsea.png',
+      madeIn: 'UK',
+      sizeRange: '15-27',
+      brand: 'Nike',
+    },
+  ],
+  vans: [
+    {
+      id: '41',
+      name: 'Light Weight Running Shoes',
+      price: '$21.00',
+      img: 'running.png',
+      madeIn: 'CN',
+      sizeRange: '35-39',
+      brand: 'Vans',
+      isNew: true,
+    },
+    {
+      id: '42',
+      name: 'Premium Leather Chelsea Boots',
+      price: '$25.00',
+      img: 'chelsea.png',
+      madeIn: 'US',
+      sizeRange: '40-46',
+      brand: 'Vans',
+    },
+    {
+      id: '43',
+      name: 'Waterproof White Sneaker',
+      price: '$21.00',
+      img: 'waterproof.png',
+      madeIn: 'UK',
+      sizeRange: '40-46',
+      brand: 'Vans',
+      isDiscounted: true,
+    },
+    {
+      id: '44',
+      name: 'Classic White Tennis Sneakers',
+      price: '$25.00',
+      img: 'tennis.png',
+      madeIn: 'CN',
+      sizeRange: '28-34',
+      brand: 'Vans',
+    },
+    {
+      id: '45',
+      name: 'Premium Leather Chelsea Boots',
+      price: '$25.00',
+      img: 'chelsea.png',
+      madeIn: 'US',
+      sizeRange: '35-39',
+      brand: 'Vans',
+    },
+  ],
+  adidas: [
+    {
+      id: '46',
+      name: 'Classic White Tennis Sneakers',
+      price: '$25.00',
+      img: 'tennis.png',
+      madeIn: 'UK',
+      sizeRange: '40-46',
+      brand: 'Adidas',
+      isNew: true,
+    },
+    {
+      id: '47',
+      name: 'Waterproof White Sneaker',
+      price: '$25.00',
+      img: 'waterproof.png',
+      madeIn: 'CN',
+      sizeRange: '35-39',
+      brand: 'Adidas',
+    },
+    {
+      id: '48',
+      name: 'Premium Leather Chelsea Boots',
+      price: '$25.00',
+      img: 'chelsea.png',
+      madeIn: 'US',
+      sizeRange: '40-46',
+      brand: 'Adidas',
+      isDiscounted: true,
+    },
+    {
+      id: '49',
+      name: 'Light Weight Running Shoes',
+      price: '$25.00',
+      img: 'running.png',
+      madeIn: 'UK',
+      sizeRange: '28-34',
+      brand: 'Adidas',
+    },
+    {
+      id: '50',
+      name: 'Premium Leather Chelsea Boots',
+      price: '$25.00',
+      img: 'chelsea.png',
+      madeIn: 'CN',
+      sizeRange: '15-27',
+      brand: 'Adidas',
+    },
+  ],
 }
 
+// Tab definitions
+export const tabs = [
+  { id: 'featured' as TabKey, label: 'Featured' },
+  { id: 'newArrivals' as TabKey, label: 'New Arrivals' },
+  { id: 'bestSeller' as TabKey, label: 'Best Seller' },
+]
+
+export const categoryTabs = [
+  { id: 'athleticFootwear' as CategoryKey, label: 'Athletic Footwear' },
+  { id: 'luxuryLeatherShoes' as CategoryKey, label: 'Luxury Leather Shoes' },
+  { id: 'sustainableFootwear' as CategoryKey, label: 'Sustainable Footwear' },
+  { id: 'sandalsAndslides' as CategoryKey, label: 'Sandals & Slides' },
+]
+
+export const brandTabs = [
+  { id: 'nike' as BrandKey, label: 'Nike' },
+  { id: 'vans' as BrandKey, label: 'Vans' },
+  { id: 'adidas' as BrandKey, label: 'Adidas' },
+]
+
+// Categories for HomePage
 export const categories = [
-  { id: 1, img: 'athletic_footwear.png', name: 'Athletic Footwear' },
-  { id: 2, img: 'luxury_leather_shoes.png', name: 'Luxury Leather' },
-  { id: 3, img: 'sustainable_footwear.png', name: 'Sustainable Footwear' },
-  { id: 4, img: 'sandals&slides.png', name: 'Sandals & Slides' },
+  { name: 'Athletic Footwear', img: 'athletic.png' },
+  { name: 'Luxury Leather Shoes', img: 'luxury.png' },
+  { name: 'Sustainable Footwear', img: 'sustainable.png' },
+  { name: 'Sandals & Slides', img: 'sandals.png' },
 ]
 
+// Brands for HomePage
 export const brands = [
-  { id: 1, img: 'nike.png', name: 'Nike' },
-  { id: 2, img: 'vans.png', name: 'Vans' },
-  { id: 3, img: 'adidas.png', name: 'Adidas' },
+  { name: 'Nike', img: 'nike-logo.png' },
+  { name: 'Vans', img: 'vans-logo.png' },
+  { name: 'Adidas', img: 'adidas-logo.png' },
 ]
 
-export const tabs: { id: TabKey; label: string }[] = [
-  { id: 'featured', label: 'FEATURED' },
-  { id: 'newArrivals', label: 'NEW ARRIVALS' },
-  { id: 'bestSeller', label: 'BEST SELLER' },
-]
-
-export const categoryTabs: { id: CategoryKey; label: string }[] = [
-  { id: 'athleticFootwear', label: 'Athletic Footwear' },
-  { id: 'luxuryLeatherShoes', label: 'Luxury Leather Shoes' },
-  { id: 'sustainableFootwear', label: 'Sustainable Footwear' },
-  { id: 'sandalsAndslides', label: 'Sandals & Slides' },
-]
-
-export const brandTabs: { id: BrandKey; label: string }[] = [
-  { id: 'nike', label: 'NIKE' },
-  { id: 'vans', label: 'VANS' },
-  { id: 'adidas', label: 'ADIDAS' },
-]
-
-// --- HELPER FUNCTIONS FOR LOCALSTORAGE ---
-const CART_STORAGE_KEY = 'velocity_cart_items'
-const WISHLIST_STORAGE_KEY = 'velocity_wishlist_items'
-function convertToStoreProduct(p: Product): StoreProduct {
+// Helper function to convert Product to StoreProduct
+function convertToStoreProduct(product: Product): StoreProduct {
   return {
-    id: p.id,
-    name: p.name,
+    id: product.id,
+    name: product.name,
     description: 'Classic sneakers with premium materials and comfort.',
-    price: Number(p.price.replace('$', '')),
-    img: p.img,
+    price: parseFloat(product.price.replace('$', '')),
+    img: product.img,
     category: 'athleticFootwear',
-    brand: (p.brand?.toLowerCase() as BrandKey) ?? 'nike',
-    sizeRange: p.sizeRange ?? '40–45',
+    brand: (product.brand?.toLowerCase() as BrandKey) || 'nike',
+    sizeRange: product.sizeRange || '40-46',
     stock: 100,
     published: true,
-    isNew: p.isNew,
-    isDiscounted: p.isDiscounted,
+    isNew: product.isNew,
+    isDiscounted: product.isDiscounted,
     createdAt: Date.now(),
   }
 }
 
-function loadCart(): CartItem[] {
+// --- LOCAL STORAGE HELPERS ---
+const WISHLIST_STORAGE_KEY = 'wishlist'
+const CART_STORAGE_KEY = 'cart'
+
+const loadWishlist = (): WishlistItem[] => {
   try {
-    return JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]')
+    const stored = localStorage.getItem(WISHLIST_STORAGE_KEY)
+    return stored ? JSON.parse(stored) : []
   } catch {
     return []
   }
 }
 
-function saveCart(items: CartItem[]) {
-  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
-}
-
-function loadWishlist(): WishlistItem[] {
-  try {
-    return JSON.parse(localStorage.getItem(WISHLIST_STORAGE_KEY) || '[]')
-  } catch {
-    return []
-  }
-}
-
-function saveWishlist(items: WishlistItem[]) {
+const saveWishlist = (items: WishlistItem[]) => {
   localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(items))
+}
+
+const loadCart = (): CartItem[] => {
+  try {
+    const stored = localStorage.getItem(CART_STORAGE_KEY)
+    return stored ? JSON.parse(stored) : []
+  } catch {
+    return []
+  }
+}
+
+const saveCart = (items: CartItem[]) => {
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
 }
 
 // --- PINIA STORE ---
@@ -537,8 +656,29 @@ export const useProductStore = defineStore('product', () => {
     sizeRange: 'all',
   })
 
+  // --- ADMIN PRODUCT MANAGEMENT ---
+  const initialProducts: StoreProduct[] = [
+    ...products.featured,
+    ...products.newArrivals,
+    ...products.bestSeller,
+    ...Object.values(productsByCategory).flat(),
+  ].map(convertToStoreProduct)
+
+  const productList = ref<StoreProduct[]>(
+    JSON.parse(localStorage.getItem('products') || 'null') ?? initialProducts,
+  )
+  
+  watch(
+    productList,
+    () => {
+      localStorage.setItem('products', JSON.stringify(productList.value))
+    },
+    { deep: true },
+  )
+
   // --- COMPUTED / GETTERS ---
-  const allProducts = computed(() => {
+  // Static hardcoded products (without user products)
+  const hardcodedProducts = computed(() => {
     return [
       ...products.featured,
       ...products.newArrivals,
@@ -548,6 +688,29 @@ export const useProductStore = defineStore('product', () => {
       ...productsByBrand.adidas,
       ...Object.values(productsByCategory).flat(),
     ]
+  })
+
+  // Published user products
+  const userProducts = computed(() => productList.value.filter((p) => p.published))
+
+  // Converted user products to Product format
+  const convertedUserProducts = computed(() => {
+    return userProducts.value.map((p) => ({
+      id: p.id,
+      name: p.name,
+      price: typeof p.price === 'number' ? `$${p.price.toFixed(2)}` : p.price,
+      img: p.img,
+      isNew: p.isNew,
+      isDiscounted: p.isDiscounted,
+      madeIn: undefined,
+      sizeRange: p.sizeRange,
+      brand: p.brand,
+    }))
+  })
+
+  // All products including user products
+  const allProducts = computed(() => {
+    return [...hardcodedProducts.value, ...convertedUserProducts.value]
   })
 
   const wishlistCount = computed(() => wishlistItems.value.length)
@@ -562,9 +725,32 @@ export const useProductStore = defineStore('product', () => {
 
   const items = computed(() => cartItems.value)
 
+  // Admin products (all products regardless of published status)
+  const adminProducts = computed(() => productList.value)
+
   // --- PRODUCT METHODS ---
   const findProductById = (id: string): Product | undefined => {
-    return allProducts.value.find((p) => p.id === id)
+    const product = hardcodedProducts.value.find((p) => p.id === id)
+    if (product) return product
+    const userProduct = userProducts.value.find((p) => p.id === id)
+    if (userProduct) {
+      // Convert StoreProduct to Product
+      return {
+        id: userProduct.id,
+        name: userProduct.name,
+        price:
+          typeof userProduct.price === 'number'
+            ? `$${userProduct.price.toFixed(2)}`
+            : userProduct.price,
+        img: userProduct.img,
+        isNew: userProduct.isNew,
+        isDiscounted: userProduct.isDiscounted,
+        madeIn: undefined,
+        sizeRange: userProduct.sizeRange,
+        brand: userProduct.brand,
+      }
+    }
+    return undefined
   }
 
   const getProductDetail = (id: string): ProductDetail | undefined => {
@@ -747,21 +933,8 @@ export const useProductStore = defineStore('product', () => {
   const closeProductDetail = () => {
     selectedProductDetail.value = null
   }
-  //for admin
-  const initialProducts: StoreProduct[] = [
-    ...products.featured,
-    ...products.newArrivals,
-    ...products.bestSeller,
-    ...Object.values(productsByCategory).flat(),
-  ].map(convertToStoreProduct)
 
-  const productList = ref<StoreProduct[]>(
-    JSON.parse(localStorage.getItem('products') || 'null') ?? initialProducts,
-  )
-    watch(productList, () => {
-    localStorage.setItem('products', JSON.stringify(productList.value))
-  }, { deep: true })
-
+  // --- ADMIN PRODUCT METHODS ---
   const addProduct = (payload: Omit<StoreProduct, 'id' | 'createdAt'>) => {
     productList.value.unshift({
       ...payload,
@@ -778,9 +951,6 @@ export const useProductStore = defineStore('product', () => {
     const p = productList.value.find((p) => p.id === id)
     if (p) Object.assign(p, data)
   }
-  const adminProducts = computed(() => productList.value)
-
-  const userProducts = computed(() => productList.value.filter((p) => p.published))
 
   return {
     // State
@@ -822,7 +992,8 @@ export const useProductStore = defineStore('product', () => {
     closeQuickView,
     openProductDetail,
     closeProductDetail,
-    //add admin product methods
+    
+    // Admin product methods
     productList,
     adminProducts,
     userProducts,
@@ -836,4 +1007,3 @@ export const useProductStore = defineStore('product', () => {
 export function useCartStore() {
   return useProductStore()
 }
-

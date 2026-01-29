@@ -12,17 +12,12 @@
           :product-img="item.img"
           :product-name="item.name"
           :product-price="item.price"
-          @quick-view="handleQuickView"
+          @view-detail="goToProductDetail(item.id)"
         />
       </div>
     </div>
 
-    <QuickViewModal
-      v-if="selectedProduct"
-      :is-open="!!selectedProduct"
-      :product="selectedProduct"
-      @close="closeQuickView"
-    />
+    <QuickViewModal />
   </div>
   
   <div v-else class="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -39,10 +34,13 @@ import ProductCard from '@/components/ProductCard.vue'
 import QuickViewModal from '@/components/QuickViewModal.vue'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 // Import from store
-import { productsByBrand, useProductStore, type BrandKey } from '@/stores/store'
+import { productsByBrand, type BrandKey, useProductStore } from '@/stores/store'
 
 const route = useRoute()
+const router = useRouter()
+const store = useProductStore()
 
 // Get brand name from route parameter
 const brandName = computed(() => {
@@ -55,19 +53,33 @@ const brandExists = computed(() => {
   return brand in productsByBrand
 })
 
-// Get products for the current brand
+// Get products for the current brand - includes both hardcoded and user products
 const currentProducts = computed(() => {
   const brand = brandName.value.toLowerCase() as BrandKey
-  return productsByBrand[brand] || []
+  
+  // Get hardcoded products for this brand
+  const hardcodedProducts = productsByBrand[brand] || []
+  
+  // Get user products filtered by brand
+  const userBrandProducts = store.userProducts
+    .filter(p => p.brand === brand)
+    .map(p => ({
+      id: p.id,
+      name: p.name,
+      price: typeof p.price === 'number' ? `$${p.price.toFixed(2)}` : p.price,
+      img: p.img,
+      isNew: p.isNew,
+      isDiscounted: p.isDiscounted,
+      madeIn: undefined,
+      sizeRange: p.sizeRange,
+      brand: p.brand
+    }))
+  
+  // Combine both
+  return [...hardcodedProducts, ...userBrandProducts]
 })
 
-// Use the store composable
-const { selectedProduct, openQuickView, closeQuickView } = useProductStore()
-
-// Handle quick view with proper brand name
-const handleQuickView = (productId: string) => {
-  // Capitalize first letter for display
-  const capitalizedBrand = brandName.value.charAt(0).toUpperCase() + brandName.value.slice(1)
-  openQuickView(productId, capitalizedBrand)
+const goToProductDetail = (id: string) => {
+  router.push(`/product/${id}`)
 }
 </script>
