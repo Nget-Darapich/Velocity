@@ -578,21 +578,18 @@ export const brandTabs = [
   { id: 'adidas' as BrandKey, label: 'Adidas' },
 ]
 
-// Categories for HomePage
 export const categories = [
-  { name: 'Athletic Footwear', img: 'athletic.png' },
-  { name: 'Luxury Leather Shoes', img: 'luxury.png' },
-  { name: 'Sustainable Footwear', img: 'sustainable.png' },
-  { name: 'Sandals & Slides', img: 'sandals.png' },
+  { id: 1, img: 'athletic_footwear.png', name: 'Athletic Footwear' },
+  { id: 2, img: 'luxury_leather_shoes.png', name: 'Luxury Leather' },
+  { id: 3, img: 'sustainable_footwear.png', name: 'Sustainable Footwear' },
+  { id: 4, img: 'sandals&slides.png', name: 'Sandals & Slides' },
 ]
 
-// Brands for HomePage
 export const brands = [
-  { name: 'Nike', img: 'nike-logo.png' },
-  { name: 'Vans', img: 'vans-logo.png' },
-  { name: 'Adidas', img: 'adidas-logo.png' },
+  { id: 1, img: 'nike.png', name: 'Nike' },
+  { id: 2, img: 'vans.png', name: 'Vans' },
+  { id: 3, img: 'adidas.png', name: 'Adidas' },
 ]
-
 // Helper function to convert Product to StoreProduct
 function convertToStoreProduct(product: Product): StoreProduct {
   return {
