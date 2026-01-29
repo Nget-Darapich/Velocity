@@ -93,7 +93,10 @@ export const useOrdersStore = defineStore('orders', {
   getters: {
     allOrders(state): Order[] {
       return [...state.orders]
-        .map((o) => ({ ...o, status: o.status === 'CANCELLED' ? o.status : deriveStatus(o.createdAt) }))
+        .map((o) => ({
+          ...o,
+          status: o.status === 'CANCELLED' ? o.status : deriveStatus(o.createdAt),
+        }))
         .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
     },
     recentOrders(): Order[] {
@@ -149,7 +152,10 @@ export const useOrdersStore = defineStore('orders', {
     cancelOrder(id: string) {
       const idx = this.orders.findIndex((o) => o.id === id)
       if (idx === -1) return false
-      this.orders[idx].status = 'CANCELLED'
+      //this.orders[idx].status = 'CANCELLED'
+      const order = this.orders[idx]
+      if (!order) return false
+      order.status = 'CANCELLED'
       saveOrders(this.orders)
       return true
     },

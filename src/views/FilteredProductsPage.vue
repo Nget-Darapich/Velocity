@@ -13,7 +13,7 @@
           :product-img="item.img"
           :product-name="item.name"
           :product-price="item.price"
-          @quick-view="handleQuickView"
+          @view-detail="goToProductDetail(item.id)"
         />
       </div>
     </div>
@@ -26,12 +26,7 @@
       </router-link>
     </div>
 
-    <QuickViewModal
-      v-if="selectedProduct"
-      :is-open="!!selectedProduct"
-      :product="selectedProduct"
-      @close="closeQuickView"
-    />
+    <QuickViewModal />
   </div>
 </template>
 
@@ -39,8 +34,10 @@
 import ProductCard from '@/components/ProductCard.vue'
 import QuickViewModal from '@/components/QuickViewModal.vue'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useProductStore } from '@/stores/store'
 
+const router = useRouter()
 const productStore = useProductStore()
 
 // Get filtered products based on current filters
@@ -48,11 +45,7 @@ const filteredProducts = computed(() => {
   return productStore.getFilteredProducts(productStore.currentFilters)
 })
 
-// Use the store composable
-const { selectedProduct, openQuickView, closeQuickView } = useProductStore()
-
-// Handle quick view
-const handleQuickView = (productId: string) => {
-  openQuickView(productId)
+const goToProductDetail = (id: string) => {
+  router.push(`/product/${id}`)
 }
 </script>

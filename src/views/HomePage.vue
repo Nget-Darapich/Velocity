@@ -76,7 +76,6 @@
         :product-img="item.img"
         :product-name="item.name"
         :product-price="item.price"
-
         @view-detail="goToProductDetail(Number(item.id))"
       />
     </div>

@@ -1,17 +1,43 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+import type { Product } from '@/stores/store'
+
+const props = defineProps<{
+  product: Product
+}>()
+
+const imageUrl = computed(() => {
+  const img = props.product.img
+
+  //  Base64 image (uploaded by admin)
+  if (img.startsWith('data:image')) {
+    return img
+  }
+
+  //  Static asset image
+  try {
+    return new URL(`../../assets/images/${img}`, import.meta.url).href
+  } catch {
+    return ''
+  }
+})
+</script>
+
 <template>
   <div>
     <!-- Image Box -->
     <div class="relative bg-[#DEE3F1] rounded-xl h-[230px] flex items-center justify-center">
-      <img :src="product.image" class="max-h-[140px] object-contain" />
+      <img v-if="imageUrl" :src="imageUrl" class="max-h-[140px] object-contain" />
+      <div v-else class="text-gray-400 text-sm">No Image</div>
 
       <!-- Actions -->
       <div class="absolute top-3 right-3 flex flex-col gap-2">
-        <button class="bg-white w-9 h-9 rounded-full flex items-center justify-center shadow">
-          🤍
+        <!-- <button class="bg-white w-9 h-9 rounded-full flex items-center justify-center shadow">
+          ✏️
         </button>
         <button class="bg-white w-9 h-9 rounded-full flex items-center justify-center shadow">
-          👁️
-        </button>
+          🗑️
+        </button> -->
       </div>
     </div>
 
@@ -20,28 +46,10 @@
       <p class="font-semibold">{{ product.name }}</p>
 
       <div class="flex items-center gap-3">
-        <span class="text-orange-500 font-semibold">${{ product.price }}</span>
-        <span class="text-gray-400 line-through text-sm"> ${{ product.oldPrice }} </span>
-      </div>
-
-      <!-- Rating -->
-      <div class="flex items-center gap-2 text-sm">
-        <div class="text-orange-400">★★★★★</div>
-        <span class="text-gray-500">({{ product.reviews }})</span>
+        <span class="text-orange-500 font-semibold">
+          {{ product.price }}
+        </span>
       </div>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-defineProps<{
-  product: {
-    name: string
-    image: string
-    price: number
-    oldPrice: number
-    rating: number
-    reviews: number
-  }
-}>()
-</script>

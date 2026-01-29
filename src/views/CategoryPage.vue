@@ -12,23 +12,21 @@
           :product-img="item.img"
           :product-name="item.name"
           :product-price="item.price"
-          @quick-view="handleQuickView"
+          @view-detail="goToProductDetail(item.id)"
         />
       </div>
     </div>
 
-    <QuickViewModal
-      v-if="selectedProduct"
-      :is-open="!!selectedProduct"
-      :product="selectedProduct"
-      @close="closeQuickView"
-    />
+    <QuickViewModal />
   </div>
-  
+
   <div v-else class="flex flex-col items-center justify-center min-h-[60vh] gap-4">
     <p class="text-4xl font-medium text-gray-600">Category Not Found</p>
     <p class="text-lg text-gray-500">The category "{{ categoryName }}" does not exist.</p>
-    <router-link to="/products" class="mt-4 px-6 py-3 bg-black text-white rounded hover:bg-gray-800">
+    <router-link
+      to="/products"
+      class="mt-4 px-6 py-3 bg-black text-white rounded hover:bg-gray-800"
+    >
       Back to Products
     </router-link>
   </div>
@@ -39,10 +37,13 @@ import ProductCard from '@/components/ProductCard.vue'
 import QuickViewModal from '@/components/QuickViewModal.vue'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 // Import from store
-import { productsByCategory, useProductStore, type CategoryKey } from '@/stores/store'
+import { productsByCategory, type CategoryKey, useProductStore } from '@/stores/store'
 
+const router = useRouter()
 const route = useRoute()
+const store = useProductStore()
 
 // Get category name from route parameter
 const categoryName = computed(() => {
@@ -57,7 +58,7 @@ const formattedCategoryName = computed(() => {
   // Capitalize first letter of each word
   return withSpaces
     .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
     .trim()
 })
@@ -68,17 +69,33 @@ const categoryExists = computed(() => {
   return category in productsByCategory
 })
 
-// Get products for the current category
+// Get products for the current category - includes both hardcoded and user products
 const currentProducts = computed(() => {
   const category = categoryName.value as CategoryKey
-  return productsByCategory[category] || []
+  
+  // Get hardcoded products for this category
+  const hardcodedProducts = productsByCategory[category] || []
+  
+  // Get user products filtered by category
+  const userCategoryProducts = store.userProducts
+    .filter(p => p.category === category)
+    .map(p => ({
+      id: p.id,
+      name: p.name,
+      price: typeof p.price === 'number' ? `$${p.price.toFixed(2)}` : p.price,
+      img: p.img,
+      isNew: p.isNew,
+      isDiscounted: p.isDiscounted,
+      madeIn: undefined,
+      sizeRange: p.sizeRange,
+      brand: p.brand
+    }))
+  
+  // Combine both
+  return [...hardcodedProducts, ...userCategoryProducts]
 })
 
-// Use the store composable
-const { selectedProduct, openQuickView, closeQuickView } = useProductStore()
-
-// Handle quick view
-const handleQuickView = (productId: string) => {
-  openQuickView(productId, 'Nike') // You can make this dynamic based on the product
+const goToProductDetail = (id: string) => {
+  router.push(`/product/${id}`)
 }
 </script>

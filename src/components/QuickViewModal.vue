@@ -26,10 +26,21 @@ const goToDetail = async () => {
     params: { id },
   })
 }
+
+// Handle both asset images and base64 images
 const imageUrl = computed(() => {
   if (!product.value?.img) return ''
+  
+  const imgName = product.value.img
+  
+  // Check if it's a base64 image (starts with data:image)
+  if (imgName.startsWith('data:image')) {
+    return imgName
+  }
+  
+  // Otherwise, try to load from assets
   try {
-    return new URL(`../assets/images/${product.value.img}`, import.meta.url).href
+    return new URL(`../assets/images/${imgName}`, import.meta.url).href
   } catch {
     return ''
   }
@@ -52,7 +63,7 @@ const addToCart = () => {
   if (!product.value) return
 
   productStore.addToCart({
-    id: Number(product.value.id),
+    id: String(product.value.id),
     name: product.value.name,
     price: Number(product.value.price.replace('$', '')),
     img: product.value.img,
